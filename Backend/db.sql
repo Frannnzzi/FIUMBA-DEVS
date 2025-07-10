@@ -33,3 +33,9 @@ CREATE TABLE public.usuarios (
 	mail varchar(70) NOT NULL,
 	CONSTRAINT usuarios_pkey PRIMARY KEY (id_usuario)
 );
+
+INSERT INTO usuarios (
+  id_usuario, nombre, apellido, rol, avatar, mail
+) VALUES (
+  1, 'Franco', 'Finazzi', 'Director', 1, 'franco.finazzi@gmail.com'
+);

@@ -3,9 +3,9 @@ const { password } = require('pg/lib/defaults');
 
 const dbclient = new Pool({
     user: 'postgres',
-    port: 5433,
+    port: 5432,
     host: '127.0.0.1',
-    database: 'Tp final DSS',
+    database: 'dbFiumba',
     password: 'augusto18'
 });
 
