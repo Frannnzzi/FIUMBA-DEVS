@@ -1,3 +1,13 @@
+CREATE TABLE public.usuarios (
+	id_usuario serial4 NOT NULL,
+	nombre varchar(25) NOT NULL,
+	apellido varchar(50) NOT NULL,
+	rol varchar(30) NOT NULL,
+	avatar int4 NOT NULL,
+	mail varchar(70) NOT NULL,
+	CONSTRAINT usuarios_pkey PRIMARY KEY (id_usuario)
+);
+
 CREATE TABLE public.proyectos (
 	id_proyecto serial4 NOT NULL,
 	nombre varchar(25) NOT NULL,
@@ -24,12 +34,8 @@ CREATE TABLE public.tareas (
 	CONSTRAINT tareas_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario)
 );
 
-CREATE TABLE public.usuarios (
-	id_usuario serial4 NOT NULL,
-	nombre varchar(25) NOT NULL,
-	apellido varchar(50) NOT NULL,
-	rol varchar(30) NOT NULL,
-	avatar int4 NOT NULL,
-	mail varchar(70) NOT NULL,
-	CONSTRAINT usuarios_pkey PRIMARY KEY (id_usuario)
+INSERT INTO usuarios (
+	nombre, apellido, rol, avatar, mail
+) VALUES (
+	'Franco', 'Finazzi', 'Director', 1, 'franco.finazzi@gmail.com'
 );

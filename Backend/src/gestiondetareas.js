@@ -3,9 +3,9 @@ const { password } = require('pg/lib/defaults');
 
 const dbclient = new Pool({
     user: 'postgres',
-    port: 5433,
+    port: 5432,
     host: '127.0.0.1',
-    database: 'Tp final DSS',
+    database: 'dbFiumba',
     password: 'augusto18'
 });
 
@@ -14,6 +14,32 @@ async function getAllusuarios() {
     return result.rows;
 }
 
+async function getOneusuario(id_usuario){
+    const result = await dbclient.query('SELECT * FROM usuarios WHERE id_usuario = $1 LIMIT 1', [id_usuario]);
+    return result.rows[0];
+}
+
+async function createUsuario(nombre, apellido, rol, avatar, mail){
+    const result = await dbclient.query('INSERT INTO usuarios (nombre, apellido, rol, avatar, mail) VALUES($1, $2, $3, $4, $5)',
+         [nombre, apellido, rol, avatar, mail]);
+
+    console.log("result", result);
+    console.log("result", result.rowCount);
+    return result.rowCount;
+}
+
+async function deleteUsuario(id) {
+    const result = await dbclient.query('DELETE * FROM usuarios WHERE id = $1', [id]);
+
+    if (result.rowCount === 0) {
+        return undefined;
+    }
+    return id;
+}
+
 module.exports = {
-    getAllusuarios 
+    getAllusuarios,
+    getOneusuario,
+    createUsuario,
+    deleteUsuario,
 };
