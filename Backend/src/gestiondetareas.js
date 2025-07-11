@@ -28,8 +28,18 @@ async function createUsuario(nombre, apellido, rol, avatar, mail){
     return result.rowCount;
 }
 
+async function deleteUsuario(id) {
+    const result = await dbclient.query('DELETE * FROM usuarios WHERE id = $1', [id]);
+
+    if (result.rowCount === 0) {
+        return undefined;
+    }
+    return id;
+}
+
 module.exports = {
-    getAllusuarios, 
+    getAllusuarios,
     getOneusuario,
     createUsuario,
+    deleteUsuario,
 };
