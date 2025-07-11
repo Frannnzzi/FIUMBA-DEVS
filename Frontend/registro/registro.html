@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro - FIUMBA-DEVS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="registro.css">
+</head>
+<body>
+  <section class="seccion-registro">
+    <div class="contenedor-formulario-registro">
+      <h1 class="titulo-principal">Registro</h1>
+      <form id="formulario-registro" class="cuadro-registro">
+        <div class="campo-formulario">
+          <label class="etiqueta-nombre" for="nombre">Nombre</label>
+          <input class="campo-nombre" type="text" id="nombre" required>
+        </div>
+        <div class="campo-formulario">
+          <label class="etiqueta-apellido" for="apellido">Apellido</label>
+          <input class="campo-apellido" type="text" id="apellido" required>
+        </div>
+        <div class="campo-formulario">
+          <label class="etiqueta-correo" for="correo">Correo electrónico</label>
+          <input class="campo-correo" type="email" id="correo" required>
+        </div>
+        <div class="campo-formulario">
+          <label class="etiqueta-rol" for="rol">Rol</label>
+          <select id="rol" class="campo-rol" required>
+            <option value="">Seleccioná un rol</option>
+            <option value="Director">Director</option>
+            <option value="Desarrollador">Desarrollador</option>
+            <option value="Tester">Tester</option>
+            <option value="Analista">Analista</option>
+          </select>
+        </div>
+        <div class="campo-formulario">
+          <label class="etiqueta-logo">Logo</label>
+          <div class="opciones-logo" id="opciones-logo">
+            <button type="button" class="boton-logo logo-color-1" data-valor="1"></button>
+            <button type="button" class="boton-logo logo-color-2" data-valor="2"></button>
+            <button type="button" class="boton-logo logo-color-3" data-valor="3"></button>
+            <button type="button" class="boton-logo logo-color-4" data-valor="4"></button>
+          </div>
+          <input type="hidden" id="logo" value="1">
+        </div>
+        <div class="campo-formulario">
+          <button class="boton-principal" type="submit">Registrarse</button>
+        </div>
+        <div id="mensaje-registro" class="mensaje-registro"></div>
+      </form>
+      <p class="texto-secundario">¿Ya tenés cuenta? <a class="enlace-acento" href="../login/login.html">Ingresá</a></p>
+    </div>
+  </section>
+  <script src="registro.js"></script>
+</body>
+</html>

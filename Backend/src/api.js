@@ -1,7 +1,9 @@
 const express = require('express');
+const cors = require('cors');
 
 const app = express ();
 app.use(express.json());
+app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 
@@ -86,7 +88,20 @@ app.put('/api/usuarios', (req, res) => {
 
 //Tareas
 
-
+//login
+app.post('/api/login', async (req, res) => {
+    const { mail } = req.body;
+    if (!mail) {
+        return res.status(400).json({ error: 'Falta el mail' });
+    }
+    // Busca el usuario por mail
+    const usuarios = await getAllusuarios();
+    const usuario = usuarios.find(u => u.mail === mail);
+    if (!usuario) {
+        return res.status(401).json({ error: 'Usuario no encontrado' });
+    }
+    res.json(usuario);
+});
 
 
 app.listen(PORT, () => {
