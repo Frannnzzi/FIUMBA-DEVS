@@ -14,6 +14,22 @@ async function getAllusuarios() {
     return result.rows;
 }
 
+async function getOneusuario(id_usuario){
+    const result = await dbclient.query('SELECT * FROM usuarios WHERE id_usuario = $1 LIMIT 1', [id_usuario]);
+    return result.rows[0];
+}
+
+async function createUsuario(nombre, apellido, rol, avatar, mail){
+    const result = await dbclient.query('INSERT INTO usuarios (nombre, apellido, rol, avatar, mail) VALUES($1, $2, $3, $4, $5)',
+         [nombre, apellido, rol, avatar, mail]);
+
+    console.log("result", result);
+    console.log("result", result.rowCount);
+    return result.rowCount;
+}
+
 module.exports = {
-    getAllusuarios 
+    getAllusuarios, 
+    getOneusuario,
+    createUsuario,
 };

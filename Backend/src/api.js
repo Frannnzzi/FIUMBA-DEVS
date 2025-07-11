@@ -5,7 +5,10 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-const { getAllusuarios } = require('./gestiondetareas');
+const { getAllusuarios, 
+        getOneusuario,
+        createUsuario,
+} = require('./gestiondetareas');
 
 app.get('/api/health', (req, res) => {
     res.json({status: "Levantado"});
@@ -19,12 +22,40 @@ app.get('/api/usuarios', async (req, res) => {
 });
 
 //get one usuarios
-// app.get('/api/usuarios/:id', (req, res) => {
-//     //res.json({status: 'Ok'})
-// });
+app.get('/api/usuarios/:id_usuario', async (req, res) => {
+    const usuario = await getOneusuario(req.params.id_usuario);
+
+    if (!usuario){
+        return res.status(404).json({error: 'usuario Not found'});
+    }
+    res.json(usuario);
+});
+
 
 //insert usuario
+/*
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"nombre":"Augusto","apellido":"Florio","rol":"Jefe","avatar":"2","mail":"florioaugusto7@gmail.com"}' \
+  http://localhost:3000/api/usuarios
+*/
+app.post('/api/usuarios', async (req, res) => {
 
+    if (!req.body.nombre || !req.body.edad || !req.body.vida || !req.body.pasado ||
+    !req.body.nivel_de_poder || req.body.nacionalidad || req.body.tipo) {
+    return res.status(400).json({error: "Missin required fields"});
+}
+
+    const usuario = await createUsuario(
+        req.body.nombre, 
+        req.body.apellido,
+        req.body.rol,
+        req.body.avatar,
+        req.body.mail
+    );
+    console.log("usuario",usuario);
+    res.json({status: "OK"});
+});
 //update usuario
 
 
