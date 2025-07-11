@@ -184,7 +184,6 @@ body {
   flex: 1 1 320px;
   /* Limitar a 2 líneas de texto */
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
