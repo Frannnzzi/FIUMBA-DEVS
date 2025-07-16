@@ -239,6 +239,15 @@ body {
   transition: box-shadow 0.25s, border-color 0.25s, background 0.25s;
 }
 
+.placeholder-tarea, .placeholder-novedad {
+  color: #b0b0b0;
+  font-size: 1.05em;
+  text-align: center;
+  margin: 18px 0;
+  font-style: italic;
+  opacity: 0.8;
+}
+
 /* Responsive */
 @media (max-width: 1100px) {
   .contenedor-principal {

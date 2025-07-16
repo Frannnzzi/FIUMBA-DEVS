@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>FIUMBA-DEVS | Proyectos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../pprincipal/principal.css">
+  <link rel="stylesheet" href="proyectos.css">
+</head>
+<body>
+  <nav class="barra-superior">
+    <div class="logo-menu" onclick="window.location.href='../pprincipal/principal.html'">
+      <img src="../images/Untitled_logo_1_free-file.jpg" alt="Logo FIUMBA DEVS" style="height: 36px; width: 36px; object-fit: contain; border-radius: 8px; background: #2d3e38;" />
+    </div>
+    <div class="navbar-central">
+      <a class="nav-link" href="../pprincipal/principal.html">Inicio</a>
+      <a class="nav-link seleccionado" href="#">Proyectos</a>
+      <a class="nav-link" href="../tareas/tareas.html">Tareas</a>
+    </div>
+  </nav>
+  <main class="main-proyectos">
+    <div class="contenedor-proyectos">
+      <div class="buscar-proyecto-bar">
+        <input type="text" class="input-buscar-proyecto" placeholder="Buscar proyecto...">
+        <button class="btn-buscar-proyecto">Buscar</button>
+      </div>
+      <div class="lista-proyectos">
+        <!-- Aquí se mostrarán los proyectos -->
+        <div class="placeholder-proyecto">No hay proyectos por ahora</div>
+      </div>
+    </div>
+  </main>
+  <script src="proyectos.js"></script>
+</body>
+</html> 

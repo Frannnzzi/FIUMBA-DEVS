@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>FIUMBA-DEVS | Crear Proyecto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../pprincipal/principal.css">
+  <link rel="stylesheet" href="crear-proyecto.css">
+</head>
+<body>
+  <nav class="barra-superior">
+    <div class="logo-menu" onclick="window.location.href='../pprincipal/principal.html'">
+      <img src="../images/Untitled_logo_1_free-file.jpg" alt="Logo FIUMBA DEVS" style="height: 36px; width: 36px; object-fit: contain; border-radius: 8px; background: #2d3e38;" />
+    </div>
+    <div class="navbar-central">
+      <a class="nav-link" href="../pprincipal/principal.html">Inicio</a>
+      <a class="nav-link" href="proyectos.html">Proyectos</a>
+      <a class="nav-link" href="../tareas/tareas.html">Tareas</a>
+    </div>
+  </nav>
+  <div class="modal-crear-proyecto">
+    <h2 class="titulo-crear-proyecto">Crear proyecto</h2>
+    <form class="form-crear-proyecto">
+      <label class="label-form">Nombre del proyecto</label>
+      <input type="text" class="input-form-proyecto" placeholder="Nombre del proyecto" required>
+      <label class="label-form">Descripción</label>
+      <input type="text" class="input-form-proyecto" placeholder="Descripción" required>
+      <label class="label-form">Fecha de inicio</label>
+      <input type="date" class="input-form-proyecto" required>
+      <label class="label-form">Fecha final</label>
+      <input type="date" class="input-form-proyecto" required>
+      <label class="label-form">Estado</label>
+      <select class="input-form-proyecto" required>
+        <option value="pendiente">Pendiente</option>
+        <option value="en curso">En curso</option>
+        <option value="finalizado">Finalizado</option>
+      </select>
+      <div class="botones-form">
+        <button type="submit" class="btn-guardar">Guardar</button>
+        <button type="button" class="btn-cancelar" onclick="window.location.href='proyectos.html'">Cancelar</button>
+      </div>
+    </form>
+  </div>
+  <script src="crear-proyecto.js"></script>
+</body>
+</html> 

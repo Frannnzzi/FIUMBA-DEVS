@@ -11,21 +11,16 @@
   <!-- Barra superior -->
   <nav class="barra-superior">
     <div class="logo-menu" onclick="window.location.href='principal.html'">
-      <!-- Logo SVG simple, puedes cambiarlo por el que quieras -->
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        <rect x="3" y="8" width="30" height="20" rx="5" stroke="#ffffff" stroke-width="2" fill="none"/>
-        <polyline points="5,10 18,22 31,10" stroke="#ffffff" stroke-width="2" fill="none"/>
-      </svg>
+      <img src="../images/Untitled_logo_1_free-file.jpg" alt="Logo FIUMBA DEVS" style="height: 36px; width: 36px; object-fit: contain; border-radius: 8px; background: #2d3e38;" />
     </div>
     <div class="navbar-central">
-      <a class="nav-link seleccionado" href="#">Inicio</a>
-      <a class="nav-link" href="#">Proyectos</a>
-      <a class="nav-link" href="#">Tareas</a>
-      <!-- Agrega más links si lo deseas -->
+      <a class="nav-link seleccionado" href="principal.html">Inicio</a>
+      <a class="nav-link" href="../proyectos/proyectos.html">Proyectos</a>
+      <a class="nav-link" href="../tareas/tareas.html">Tareas</a>
     </div>
     <div class="saludo-fecha">
-      <span id="saludo-usuario">Hola Usuario,</span>
-      <span id="fecha-actual"></span>
+      <span id="saludo-usuario">Hola Augusto,</span>
+      <span id="fecha-actual">hoy es 12 de Junio de 2025</span>
     </div>
   </nav>
 
@@ -34,30 +29,22 @@
       <!-- Columna izquierda: tareas -->
       <section class="bloque bloque-tareas">
         <h2 class="titulo-bloque">Tareas pendientes</h2>
-        <div class="lista-tareas">
-          <div class="tarjeta-tarea">
-            <div class="nombre-tarea">proyecto 1</div>
-            <div class="desc-tarea">pintar casa</div>
-            <div class="vence-tarea">vence en 2 días</div>
-          </div>
-          <div class="tarjeta-tarea">
-            <div class="nombre-tarea">proyecto 2</div>
-            <div class="desc-tarea">corregir frontend</div>
-            <div class="vence-tarea">vence en 10 días</div>
-          </div>
+        <div class="lista-tareas" id="lista-tareas">
+          <div class="placeholder-tarea" id="placeholder-tarea">No hay tareas pendientes.</div>
+          <!-- Aquí se mostrarán las tareas pendientes dinámicamente -->
         </div>
       </section>
       <!-- Columna derecha: acciones y novedades -->
       <div class="columna-derecha">
         <div class="fila-botones">
-          <button class="boton-principal-dashboard">Crear Proyecto</button>
-          <button class="boton-principal-dashboard">Crear Tarea</button>
+          <button class="boton-principal-dashboard" onclick="window.location.href='../proyectos/crear-proyecto.html'">Crear Proyecto</button>
+          <button class="boton-principal-dashboard" onclick="window.location.href='../tareas/crear-tarea.html'">Crear Tarea</button>
         </div>
         <section class="bloque bloque-novedades">
           <h2 class="titulo-bloque">Novedades</h2>
-          <div class="lista-novedades">
-            <div class="tarjeta-novedad">Julia ha realizado una tarea &lt;&gt; Hacer Dibujo UX</div>
-            <div class="tarjeta-novedad">Mateo ha creado un nuevo proyecto</div>
+          <div class="lista-novedades" id="lista-novedades">
+            <div class="placeholder-novedad" id="placeholder-novedad">No hay novedades.</div>
+            <!-- Aquí se mostrarán las novedades dinámicamente -->
           </div>
         </section>
       </div>
