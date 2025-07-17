@@ -1,0 +1,112 @@
+@import url('../pprincipal/principal.css');
+
+body {
+  background: #0a0f0e;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.barra-superior {
+  /* Hereda de principal.css */
+}
+
+.modal-crear-proyecto {
+  width: 60vw;
+  max-width: 600px;
+  background: #101616;
+  border: 3px solid #fff;
+  border-radius: 24px;
+  padding: 28px 18px 18px 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 32px auto 0 auto;
+}
+
+.titulo-crear-proyecto {
+  color: #8ff6d5;
+  font-size: 1.4em;
+  font-weight: 800;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.form-crear-proyecto {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+.label-form {
+  color: #f7e967;
+  font-size: 1em;
+  font-weight: 700;
+  margin-bottom: 2px;
+  margin-top: 6px;
+}
+.input-form-proyecto {
+  background: #0a0f0e;
+  color: #fff;
+  border: 2px solid #8ff6d5;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 1em;
+  outline: none;
+  margin: 0 0 4px 0;
+}
+.input-form-proyecto:focus {
+  border-color: #4a4ae6;
+}
+select.input-form-proyecto {
+  padding: 8px 14px;
+  font-size: 1em;
+}
+input[type="date"].input-form-proyecto {
+  background: #fff;
+  color: #222;
+}
+.botones-form {
+  display: flex;
+  flex-direction: row;
+  gap: 18px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.btn-guardar {
+  min-width: 100px;
+  font-size: 1em;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 10px 0;
+  border: 2px solid #3ec46d;
+  background: #3ec46d;
+  color: #0a0f0e;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-guardar:hover {
+  background: #2fa055;
+  color: #fff;
+}
+.btn-cancelar {
+  min-width: 100px;
+  font-size: 1em;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 10px 0;
+  border: 2px solid #888;
+  background: #222;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.btn-cancelar:hover {
+  background: #e74c3c;
+  color: #fff;
+  border: 2px solid #c0392b;
+} 

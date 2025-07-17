@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>FIUMBA-DEVS | Principal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="principal.css">
+</head>
+<body>
+  <!-- Barra superior -->
+  <nav class="barra-superior">
+    <div class="logo-menu" onclick="window.location.href='principal.html'">
+      <img src="../images/Untitled_logo_1_free-file.jpg" alt="Logo FIUMBA DEVS" style="height: 36px; width: 36px; object-fit: contain; border-radius: 8px; background: #2d3e38;" />
+    </div>
+    <div class="navbar-central">
+      <a class="nav-link seleccionado" href="principal.html">Inicio</a>
+      <a class="nav-link" href="../proyectos/proyectos.html">Proyectos</a>
+      <a class="nav-link" href="../tareas/tareas.html">Tareas</a>
+    </div>
+    <div class="saludo-fecha">
+      <span id="saludo-usuario">Hola Augusto,</span>
+      <span id="fecha-actual">hoy es 12 de Junio de 2025</span>
+    </div>
+  </nav>
+
+  <main class="main-dashboard">
+    <div class="contenedor-principal">
+      <!-- Columna izquierda: tareas -->
+      <section class="bloque bloque-tareas">
+        <h2 class="titulo-bloque">Tareas pendientes</h2>
+        <div class="lista-tareas" id="lista-tareas">
+          <div class="placeholder-tarea" id="placeholder-tarea">No hay tareas pendientes.</div>
+          <!-- Aquí se mostrarán las tareas pendientes dinámicamente -->
+        </div>
+      </section>
+      <!-- Columna derecha: acciones y novedades -->
+      <div class="columna-derecha">
+        <div class="fila-botones">
+          <button class="boton-principal-dashboard" onclick="window.location.href='../proyectos/crear-proyecto.html'">Crear Proyecto</button>
+          <button class="boton-principal-dashboard" onclick="window.location.href='../tareas/crear-tarea.html'">Crear Tarea</button>
+        </div>
+        <section class="bloque bloque-novedades">
+          <h2 class="titulo-bloque">Novedades</h2>
+          <div class="lista-novedades" id="lista-novedades">
+            <div class="placeholder-novedad" id="placeholder-novedad">No hay novedades.</div>
+            <!-- Aquí se mostrarán las novedades dinámicamente -->
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script src="principal.js"></script>
+</body>
+</html>
