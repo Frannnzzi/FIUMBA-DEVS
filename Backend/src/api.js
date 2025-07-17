@@ -1,18 +1,30 @@
 const express = require('express');
-const cors = require('cors');
 
 const app = express ();
 app.use(express.json());
-app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 
 const { 
     getAllusuarios,
     getOneusuario,
-    Createusuario,
-    Deleteusuario,
-} = require('./gestiondetareas');
+    createUsuario,
+    deleteUsuario,
+} = require('./usuarios');
+
+const { 
+    getAllproyectos,
+    getOneproyecto,
+    createProyecto,
+    deleteProyecto,
+} = require('./proyectos');
+
+const { 
+    getAlltareas,
+    getOnetarea,
+    createTarea,
+    deleteTarea,
+} = require('./tareas');
 
 //health route
 app.get('/api/health', (req, res) => {
@@ -27,40 +39,38 @@ app.get('/api/usuarios', async (req, res) => {
 });
 
 //get one usuarios
-app.get('/api/usuarios/:id', async (req, res) => {
-    const usuario = await getOneusuario(req.params.id);
-    if (!usuario) {
-        return res.status(404).json({error: 'Usuario no encontrado'});
+app.get('/api/usuarios/:id_usuario', async (req, res) => {
+    const usuario = await getOneusuario(req.params.id_usuario);
+
+    if (!usuario){
+        return res.status(404).json({error: 'usuario Not found'});
     }
     res.json(usuario);
- });
+});
+
 
 //insert usuario
-/* esto es para probar el post a ver si funca bien jeje
-   curl --header "Content-Type: application/json" \
-   --request POST \
-   --data '{"nombre":"Franco","apellido":"Finazzi","rol":"SDR","avatar":1,"mail":"franfinazzi@gmail.com"}' \
-   http://localhost:3000/api/usuarios */
-
+/*
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"nombre":"Augusto","apellido":"Florio","rol":"Jefe","avatar":"2","mail":"florioaugusto7@gmail.com"}' \
+  http://localhost:3000/api/usuarios
+*/
 app.post('/api/usuarios', async (req, res) => {
 
-    if (!req.body.nombre ||
-        !req.body.nombre ||
-        !req.body.apellido ||
-        !req.body.rol ||
-        !req.body.avatar ||
-        !req.body.mail) {
-            return res.status(400).json({error: 'Se requieren datos'});
-        }
-    
-    const usuario = await Createusuario(
-        req.body.nombre,
+    if (!req.body.nombre || !req.body.apellido || !req.body.rol || !req.body.avatar ||
+    !req.body.mail) {
+    return res.status(400).json({error: "Missing required fields"});
+}
+
+    const usuario = await createUsuario(
+        req.body.nombre, 
         req.body.apellido,
         req.body.rol,
         req.body.avatar,
-        req.body.mail,
+        req.body.mail
     );
-
+    
     if (!usuario) {
         return res.status(500).json({error: 'Error al crear usuario'});
     }
@@ -68,14 +78,14 @@ app.post('/api/usuarios', async (req, res) => {
 });
 
 //delete usuario
-app.delete('/api/usuarios/:id', async (req, res) => {
+app.delete('/api/usuarios/:id_usuario', async (req, res) => {
 
-    const usuario = await Deleteusuario(req.params.id);
+    const usuario = await deleteUsuario(req.params.id_usuario);
 
-    if (!personaje) {
-        return res.status(404).json({error: 'Ususario id: ' + req.params.id + ' no encontrado'});
+    if (!usuario) {
+        return res.status(404).json({error: 'Ususario id: ' + req.params.id_usuario + ' no encontrado'});
     }
-    res.json({status: 'Ok', id: usuario});
+    res.json({status: 'Ok', id_usuario: usuario});
 });
 
 //update usuario
@@ -85,22 +95,127 @@ app.put('/api/usuarios', (req, res) => {
 
 
 //Proyectos
+//get all proyectos
+app.get('/api/proyectos', async (req, res) => {
+    const proyectos = await getAllproyectos();
+    res.json(proyectos);
+});
+
+//get one proyecto
+app.get('/api/proyectos/:id_proyecto', async (req, res) => {
+    const proyecto = await getOneproyecto(req.params.id_proyecto);
+
+    if (!proyecto){
+        return res.status(404).json({error: 'Proyecto Not found'});
+    }
+    res.json(proyecto);
+});
+
+//insert proyecto
+/*
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"nombre":"Software de música","fecha_inicio":"2025-05-07","fecha_final":"2025-08-05","estado":"En proceso","descripcion":"Es un software para crear música", "id_usuario": 1}' \
+  http://localhost:3000/api/proyectos
+*/
+app.post('/api/proyectos', async (req, res) => {
+
+    if (!req.body.nombre || !req.body.fecha_inicio || !req.body.fecha_final || !req.body.estado ||
+    !req.body.descripcion || !req.body.id_usuario) {
+    return res.status(400).json({error: "Missing required fields"});
+}
+
+    const proyecto = await createProyecto(
+        req.body.nombre, 
+        req.body.fecha_inicio,
+        req.body.fecha_final,
+        req.body.estado,
+        req.body.descripcion,
+        req.body.id_usuario
+    );
+    
+    if (!proyecto) {
+        return res.status(500).json({error: 'Error al crear usuario'});
+    }
+    res.json({proyecto});
+});
+
+
+//delete proyecto
+/*
+curl --request DELETE http://localhost:3000/api/proyectos/:id_proyecto
+*/
+app.delete('/api/proyectos/:id_proyecto', async (req, res) => {
+
+    const proyecto = await deleteProyecto(req.params.id_proyecto);
+
+    if (!proyecto) {
+        return res.status(404).json({error: 'Proyecto id: ' + req.params.id_proyecto + ' no encontrado'});
+    }
+    res.json({status: 'Ok', id_proyecto: proyecto});
+});
+
 
 //Tareas
 
-//login
-app.post('/api/login', async (req, res) => {
-    const { mail } = req.body;
-    if (!mail) {
-        return res.status(400).json({ error: 'Falta el mail' });
+//get all tareas
+app.get('/api/tareas', async (req, res) => {
+    const tareas = await getAlltareas();
+    res.json(tareas);
+});
+
+//get one tarea
+app.get('/api/tareas/:id_tarea', async (req, res) => {
+    const tarea = await getOnetarea(req.params.id_tarea);
+
+    if (!tarea){
+        return res.status(404).json({error: 'tarea Not found'});
     }
-    // Busca el usuario por mail
-    const usuarios = await getAllusuarios();
-    const usuario = usuarios.find(u => u.mail === mail);
-    if (!usuario) {
-        return res.status(401).json({ error: 'Usuario no encontrado' });
+    res.json(tarea);
+});
+
+//insert tarea
+/*
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"titulo":"agregar algo","estado":"en proceso","descripcion":"agregar algo para que haga algo","fecha_final":"2025-08-05","prioridad":"Importante","id_proyecto":1, "id_usuario":1}' \
+  http://localhost:3000/api/tareas
+*/
+app.post('/api/tareas', async (req, res) => {
+
+    if (!req.body.titulo || !req.body.estado || !req.body.descripcion || !req.body.fecha_final ||
+    !req.body.prioridad || !req.body.id_proyecto || !req.body.id_usuario) {
+    return res.status(400).json({error: "Missing required fields"});
+}
+
+    const tarea = await createTarea(
+        req.body.titulo, 
+        req.body.estado,
+        req.body.descripcion,
+        req.body.fecha_final,
+        req.body.prioridad,
+        req.body.id_proyecto,
+        req.body.id_usuario
+    );
+    
+    if (!tarea) {
+        return res.status(500).json({error: 'Error al crear tarea'});
     }
-    res.json(usuario);
+    res.json({tarea});
+});
+
+//delete tarea
+/*
+curl --request DELETE http://localhost:3000/api/tareas/:id_proyecto
+*/
+app.delete('/api/tareas/:id_tarea', async (req, res) => {
+
+    const tarea = await deleteTarea(req.params.id_tarea);
+
+    if (!tarea) {
+        return res.status(404).json({error: 'Tarea id: ' + req.params.id_tarea + ' no encontrado'});
+    }
+    res.json({status: 'Ok', id_tarea: tarea});
 });
 
 

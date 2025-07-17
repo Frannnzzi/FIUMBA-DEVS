@@ -15,7 +15,7 @@ CREATE TABLE public.proyectos (
 	fecha_final date NOT NULL,
 	estado varchar(30) NOT NULL,
 	descripcion varchar(100) NULL,
-	id_usuario int4 NULL,
+	id_usuario int4 NOT NULL,
 	CONSTRAINT proyectos_pkey PRIMARY KEY (id_proyecto),
 	CONSTRAINT proyectos_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario)
 );
@@ -27,8 +27,8 @@ CREATE TABLE public.tareas (
 	descripcion varchar(100) NULL,
 	fecha_final date NOT NULL,
 	prioridad varchar(20) NOT NULL,
-	id_proyecto int4 NULL,
-	id_usuario int4 NULL,
+	id_proyecto int4 NOT NULL,
+	id_usuario int4 NOT NULL,
 	CONSTRAINT tareas_pkey PRIMARY KEY (id_tarea),
 	CONSTRAINT tareas_id_proyecto_fkey FOREIGN KEY (id_proyecto) REFERENCES public.proyectos(id_proyecto),
 	CONSTRAINT tareas_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario)
