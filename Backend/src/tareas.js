@@ -14,6 +14,14 @@ async function getAlltareas() {
     return result.rows;
 }
 
+async function getAlltareasByUsuarioId(id_usuario){
+    const result = await dbclient.query('SELECT * FROM tareas WHERE id_usuario = $1', [id_usuario]);
+    if (result.rowCount === 0){
+        return undefined;
+    }
+    return result.rows;
+}
+
 async function getOnetarea(id_tarea){
     const result = await dbclient.query('SELECT * FROM tareas WHERE id_tarea = $1 LIMIT 1', [id_tarea]);
     return result.rows[0];
@@ -37,9 +45,30 @@ async function deleteTarea(id_tarea) {
     return id_tarea;
 }
 
+async function updateTarea(id_tarea, camposNuevos){
+    const campos = Object.keys(camposNuevos); //Esto nos guarda en en un array campos, el nombre de los campos que fueron actualizados
+    if (campos.length === 0){
+        return undefined
+    }
+
+    const valores = Object.values(camposNuevos);
+    const camposAmodificar = campos.map((campo, i) => `${campo} = $${i + 2}`).join(', '); /* El map modifica cada campo del array y lo iguala a $1,$2 etc 
+                                                                                            para luego armar la query
+                                                                                            */
+//El ...valores descompone el array en todos sus elementos por separado y asi se pueden pasar los valores de cada campo
+    const result = await dbclient.query(`UPDATE tareas SET ${camposAmodificar} WHERE id_tarea = $1`, [id_tarea, ...valores]); 
+
+    if (result.rowCount === 0) {
+        return undefined;
+    }
+    return result.rows[0];
+}
+
 module.exports = {
     getAlltareas,
+    getAlltareasByUsuarioId,
     getOnetarea,
     createTarea,
     deleteTarea,
+    updateTarea
 };

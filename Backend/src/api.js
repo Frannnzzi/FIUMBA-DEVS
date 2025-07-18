@@ -14,16 +14,20 @@ const {
 
 const { 
     getAllproyectos,
+    getAllporyectosByUsuarioId,
     getOneproyecto,
     createProyecto,
     deleteProyecto,
+    updateProyecto
 } = require('./proyectos');
 
 const { 
     getAlltareas,
+    getAlltareasByUsuarioId,
     getOnetarea,
     createTarea,
     deleteTarea,
+    updateTarea
 } = require('./tareas');
 
 //health route
@@ -35,10 +39,14 @@ app.get('/api/health', (req, res) => {
 //get all usuarios
 app.get('/api/usuarios', async (req, res) => {
     const usuarios = await getAllusuarios();
+
+    if (!usuarios){
+        return res.status(404).json({error: "No existen usuarios registrados"})
+    }
     res.json(usuarios);
 });
 
-//get one usuarios
+//get one usuario
 app.get('/api/usuarios/:id_usuario', async (req, res) => {
     const usuario = await getOneusuario(req.params.id_usuario);
 
@@ -101,6 +109,19 @@ app.get('/api/proyectos', async (req, res) => {
     res.json(proyectos);
 });
 
+//Proyectos
+//get all proyectos by id_usuario
+app.get('/api/proyectos/usuarios/:id_usuario', async (req, res) => {
+    const proyectos = await getAllporyectosByUsuarioId(req.params.id_usuario);
+
+    if (!proyectos){
+        return res.status(404).json({error:"Usuario not found"})
+    }
+
+    res.json(proyectos);
+
+});
+
 //get one proyecto
 app.get('/api/proyectos/:id_proyecto', async (req, res) => {
     const proyecto = await getOneproyecto(req.params.id_proyecto);
@@ -155,6 +176,23 @@ app.delete('/api/proyectos/:id_proyecto', async (req, res) => {
     res.json({status: 'Ok', id_proyecto: proyecto});
 });
 
+// update proyecto 
+/* curl --header "Content-Type: application/json" \
+  --request PATCH \
+  --data '{"estado":"Finalizado"}' \
+  http://localhost:3000/api/proyectos/1
+*/
+app.patch('/api/proyectos/:id_proyecto', async (req, res) => {
+    const id = req.params.id_proyecto;
+    const cambios = req.body;
+    const proyectoActualizado = await updateProyecto (id, cambios);
+
+    if (proyectoActualizado === 0 ){
+        return res.status(404).json({error: 'No se encontro el proyecto de id ' + id});
+    }
+
+    res.json(proyectoActualizado);
+})
 
 //Tareas
 
@@ -162,6 +200,18 @@ app.delete('/api/proyectos/:id_proyecto', async (req, res) => {
 app.get('/api/tareas', async (req, res) => {
     const tareas = await getAlltareas();
     res.json(tareas);
+});
+
+//get all tareas por usuario
+app.get('/api/tareas/usuarios/:id_usuario', async (req, res) => {
+    const proyectos = await getAlltareasByUsuarioId(req.params.id_usuario);
+
+    if (!proyectos){
+        return res.status(404).json({error:"Usuario not found"})
+    }
+
+    res.json(proyectos);
+
 });
 
 //get one tarea
@@ -218,6 +268,23 @@ app.delete('/api/tareas/:id_tarea', async (req, res) => {
     res.json({status: 'Ok', id_tarea: tarea});
 });
 
+// update tarea 
+/* curl --header "Content-Type: application/json" \
+  --request PATCH \
+  --data '{"estado":"Finalizado"}' \
+  http://localhost:3000/api/tareas/1
+*/
+app.patch('/api/tareas/:id_tarea', async (req, res) => {
+    const id = req.params.id_tarea;
+    const cambios = req.body;
+    const tareaActualizada = await updateTarea (id, cambios);
+
+    if (tareaActualizada === 0 ){
+        return res.status(404).json({error: 'No se encontro el proyecto de id ' + id});
+    }
+
+    res.json(tareaActualizada);
+})
 
 app.listen(PORT, () => {
     console.log("Server Listening on PORT:", PORT);
