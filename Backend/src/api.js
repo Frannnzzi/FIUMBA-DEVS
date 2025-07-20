@@ -1,9 +1,12 @@
 const express = require('express');
+const cors = require('cors');
+const app = express();
 
-const app = express ();
+app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
+
 
 const { 
     getAllusuarios,
@@ -142,7 +145,7 @@ curl --header "Content-Type: application/json" \
 app.post('/api/proyectos', async (req, res) => {
 
     if (!req.body.nombre || !req.body.fecha_inicio || !req.body.fecha_final || !req.body.estado ||
-    !req.body.descripcion || !req.body.id_usuario) {
+    !req.body.descripcion) {
     return res.status(400).json({error: "Missing required fields"});
 }
 
