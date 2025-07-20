@@ -1,24 +1,33 @@
+// Página de login - Maneja la autenticación de usuarios
 document.getElementById('formulario-login').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  const mail = document.getElementById('correo').value;
+  const email = document.getElementById('correo').value;
+  const mensajeElement = document.getElementById('mensaje-login');
+
+  // Validar que se ingresó un email
+  if (!email.trim()) {
+    mensajeElement.textContent = 'Por favor ingresa tu email';
+    return;
+  }
 
   try {
-    const resp = await fetch('http://localhost:3000/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mail })
-    });
+    // Buscar el usuario en el backend
+    const respuesta = await fetch('http://localhost:3000/api/usuarios');
+    const usuarios = await respuesta.json();
+    
+    // Buscar usuario por email
+    const usuario = usuarios.find(u => u.mail === email);
 
-    if (resp.ok) {
-      const usuario = await resp.json();
+    if (usuario) {
+      // Guardar usuario en localStorage y redirigir
       localStorage.setItem('usuario', JSON.stringify(usuario));
-      window.location.href = '/pprincipal/principal.html';
+      window.location.href = '../pprincipal/principal.html';
     } else {
-      const error = await resp.json();
-      document.getElementById('mensaje-login').textContent = error.error || 'Usuario o contraseña incorrectos';
+      mensajeElement.textContent = 'Usuario no encontrado. Verifica tu email o regístrate.';
     }
-  } catch (err) {
-    document.getElementById('mensaje-login').textContent = 'Error de conexión con el servidor';
+  } catch (error) {
+    console.error('Error en login:', error);
+    mensajeElement.textContent = 'Error de conexión con el servidor. Intenta nuevamente.';
   }
 });

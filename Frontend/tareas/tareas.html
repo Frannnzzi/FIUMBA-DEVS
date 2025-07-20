@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>FIUMBA-DEVS | Tareas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../pprincipal/principal.css">
+  <link rel="stylesheet" href="tareas.css">
+</head>
+<body>
+  <nav class="barra-superior">
+    <div class="logo-menu" onclick="window.location.href='../pprincipal/principal.html'">
+      <img src="../images/Untitled_logo_1_free-file.jpg" alt="Logo FIUMBA DEVS" style="height: 36px; width: 36px; object-fit: contain; border-radius: 8px; background: #2d3e38;" />
+    </div>
+    <div class="navbar-central">
+      <a class="nav-link" href="../pprincipal/principal.html">Inicio</a>
+      <a class="nav-link" href="../proyectos/proyectos.html">Proyectos</a>
+      <a class="nav-link seleccionado" href="#">Tareas</a>
+    </div>
+  </nav>
+  <main class="kanban-main">
+    <div class="kanban-header">
+      <span class="kanban-header-label">Seleccione el proyecto:</span>
+      <select class="kanban-proyecto-select">
+        <option>No hay proyectos disponibles</option>
+      </select>
+    </div>
+    <div class="kanban-board">
+      <div class="kanban-col" id="col-sin-asignar">
+        <h2 class="kanban-titulo">Sin asignar</h2>
+        <div class="kanban-lista" id="lista-sin-asignar"></div>
+      </div>
+      <div class="kanban-col" id="col-en-curso">
+        <h2 class="kanban-titulo">En curso</h2>
+        <div class="kanban-lista" id="lista-en-curso"></div>
+      </div>
+      <div class="kanban-col" id="col-terminado">
+        <h2 class="kanban-titulo">Terminado</h2>
+        <div class="kanban-lista" id="lista-terminado"></div>
+      </div>
+    </div>
+  </main>
+  <script src="tareas.js"></script>
+</body>
+</html> 

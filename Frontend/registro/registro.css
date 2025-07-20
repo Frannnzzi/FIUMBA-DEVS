@@ -18,7 +18,7 @@ body {
   background: #101616;
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.35);
-  padding: 48px 32px 32px 32px;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
