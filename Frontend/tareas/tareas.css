@@ -111,4 +111,37 @@
 }
 .kanban-proyecto-select:focus {
   border-color: #4a4ae6;
+}
+
+.btn-circular {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #232b2b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+.btn-circular svg {
+  width: 18px;
+  height: 18px;
+  fill: #8ff6d5;
+  pointer-events: none;
+}
+.btn-circular:hover {
+  background: #253b7d;
+}
+.btn-circular.btn-eliminar-tarea {
+  background: #2d2323;
+}
+.btn-circular.btn-eliminar-tarea svg {
+  fill: #ff4d4f;
+}
+.btn-circular.btn-editar-tarea svg {
+  fill: #8ff6d5;
 } 

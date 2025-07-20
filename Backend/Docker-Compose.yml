@@ -1,11 +1,19 @@
+#services:
+  #postgres:
+   # image: postgres:17
+    #ports:
+     # - "5433:5432"
+    #volumes:
+     # - "./volumes/postgres/data:/var/lib/postgresql/data/"
+    #environment:
+    #  - POSTGRES_PASSWORD=augusto18
+     # - POSTGRES_USER=postgres
+     # - POSTGRES_DB=dbFiumba
+
 services:
-  postgres:
-    image: postgres:17
+  backend:
+    build: .
     ports:
-      - "5433:5432"
-    volumes:
-      - "./volumes/postgres/data:/var/lib/postgresql/data/"
+      - "3000:3000"
     environment:
-      - POSTGRES_PASSWORD=augusto18
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=dbFiumba
+      - DATABASE_URL=postgresql://postgres:TU_PASSWORD@db.TU_PROYECTO.supabase.co:5432/postgres

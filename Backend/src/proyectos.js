@@ -1,12 +1,18 @@
 const {Pool} = require('pg');
 const { password } = require('pg/lib/defaults');
-
+/*
 const dbclient = new Pool({
     user: 'postgres',
     port: 5432,
     host: '127.0.0.1',
     database: 'dbFiumba',
     password: 'augusto18'
+});
+*/
+require('dotenv').config();
+
+const dbclient = new Pool({
+    connectionString: process.env.DATABASE_URL,
 });
 
 async function getAllproyectos() {
