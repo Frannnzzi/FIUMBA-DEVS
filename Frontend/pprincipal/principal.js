@@ -236,4 +236,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Iniciar la aplicación
   inicializar();
-});
