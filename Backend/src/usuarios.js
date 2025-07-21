@@ -28,13 +28,14 @@ async function getAllusuarios() {
             proyectos.id_proyecto, 
             proyectos.nombre AS nombre_proyecto
         FROM usuarios LEFT JOIN proyectos ON usuarios.id_usuario = proyectos.id_usuario 
-    `); // Usamos un LEFT JOIN para poder traernos de la base de datos tambien los usuarios que no tienen proyectos
+    `);
 
     const usuarios = {};
 
     result.rows.forEach((row) => {
         if (!usuarios[row.id_usuario]) {
             usuarios[row.id_usuario] = {
+                id_usuario: row.id_usuario,
                 nombre: row.nombre_usuario,
                 apellido: row.apellido,
                 rol: row.rol,
@@ -44,7 +45,7 @@ async function getAllusuarios() {
             };
         }
 
-        if (row.id_proyecto) {  // En este if chequeamos que el usuario tenga proyectos de manera que si no tiene no se creen proyectos con null
+        if (row.id_proyecto) {
             usuarios[row.id_usuario].proyectos.push({
                 id_proyecto: row.id_proyecto,
                 nombre: row.nombre_proyecto
@@ -52,7 +53,8 @@ async function getAllusuarios() {
         }  
     });
 
-    return usuarios;
+    // ¡ESTA LÍNEA ES LA CLAVE!
+    return Object.values(usuarios);
 }
 
 async function getOneusuario(id_usuario){

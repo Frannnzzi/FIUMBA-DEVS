@@ -34,11 +34,10 @@ async function getOneproyecto(id_proyecto){
 }
 
 async function createProyecto(nombre, fecha_inicio, fecha_final, estado, descripcion, id_usuario){
-    const result = await dbclient.query('INSERT INTO proyectos (nombre, fecha_inicio, fecha_final, estado, descripcion, id_usuario) VALUES($1, $2, $3, $4, $5, $6)',
-         [nombre, fecha_inicio, fecha_final, estado, descripcion, id_usuario]);
-
-    console.log("result", result);
-    console.log("result", result.rowCount);
+    const result = await dbclient.query(
+      'INSERT INTO proyectos (nombre, fecha_inicio, fecha_final, estado, descripcion, id_usuario) VALUES($1, $2, $3, $4, $5, $6)',
+      [nombre, fecha_inicio, fecha_final, estado, descripcion, id_usuario]
+    );
     return result.rowCount;
 }
 

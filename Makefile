@@ -1,19 +1,25 @@
 .PHONY: start-db run-backend stop-db start-backend start-frontend run-frontend run-all
 
-start-db:
+start-project:
 	cd ./Backend && docker compose up -d
 
-stop-db:
+stop-project:
 	cd ./Backend && docker compose down
 
 start-backend:
-	cd ./Backend && npm run dev
+	cd ./Backend && docker compose up backend
+
+stop-backend:
+	cd./Backend && docker compose down backend
+
+run-project: start-project
+
+################################################
 
 start-frontend:
-	cd ./Frontend && python3 -m http.server 3000
+	cd ./Frontend && docker compose up frontend
+
+stop-frontend:
+	cd ./Frontend && docker compose down frontend
 
 run-frontend: start-frontend
-
-run-backend: start-db start-backend
-
-run-all: start-db start-backend start-frontend

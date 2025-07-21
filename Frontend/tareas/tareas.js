@@ -140,6 +140,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       if (respuesta.ok) {
+        // Novedad: edición de tarea
+        const usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+        const mensajeNovedad = `${usuarioActual?.nombre || 'Usuario'} editó la tarea "${nuevoTitulo}".`;
+        window.agregarNovedad?.(mensajeNovedad);
         location.reload(); // Recargar para mostrar los cambios
       } else {
         alert('Error al actualizar la tarea');
@@ -159,6 +163,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       if (respuesta.ok) {
+        // Novedad: eliminación de tarea
+        const usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+        const mensajeNovedad = `${usuarioActual?.nombre || 'Usuario'} eliminó la tarea "${tarea.titulo}".`;
+        window.agregarNovedad?.(mensajeNovedad);
         location.reload(); // Recargar para mostrar los cambios
       } else {
         alert('Error al eliminar la tarea');
@@ -196,6 +204,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (respuesta.ok) {
+              // Novedad: cambio de estado
+              const usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+              const mensajeNovedad = `${usuarioActual?.nombre || 'Usuario'} cambió el estado de la tarea "${tarea.titulo}" a ${nuevoEstado}.`;
+              window.agregarNovedad?.(mensajeNovedad);
               location.reload(); // Recargar para mostrar los cambios
             } else {
               alert('Error al actualizar el estado de la tarea');

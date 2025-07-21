@@ -1,6 +1,7 @@
 // Página de crear proyecto - Maneja la creación de nuevos proyectos
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.querySelector('.form-crear-proyecto');
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
 
   // Validar fechas del proyecto
   function validarFechas(fechaInicio, fechaFinal) {
@@ -32,6 +33,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     return usuario;
   }
+
+  console.log(usuario.id_usuario)
 
   // Enviar proyecto al backend
   async function crearProyecto(datos, idUsuario) {
@@ -75,8 +78,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Crear proyecto en el backend
         await crearProyecto(datos, usuario.id_usuario);
 
-        // Redirigir a la página de proyectos
-        window.location.href = 'proyectos.html';
+        // Agregar novedad con mensaje corto
+        const usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+        const mensajeNovedad = `${usuarioActual?.nombre || 'Usuario'} creó el proyecto "${datos.nombre}"`;
+        window.agregarNovedad?.(mensajeNovedad);
+
+        // Esperar antes de redirigir
+        setTimeout(() => {
+          window.location.href = 'proyectos.html';
+        }, 150);
 
       } catch (error) {
         console.error('Error al crear proyecto:', error);
@@ -84,4 +94,18 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-}); 
+});
+
+window.agregarNovedad = function(mensaje) {
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  const nombreUsuario = usuario?.nombre || 'Usuario';
+  let novedades = JSON.parse(localStorage.getItem('novedades')) || [];
+  const fecha = new Date().toLocaleString('es-AR');
+  novedades.push({ 
+    usuario: nombreUsuario, 
+    mensaje, 
+    fecha 
+  });
+  localStorage.setItem('novedades', JSON.stringify(novedades));
+  console.log('Novedad guardada:', mensaje, novedades);
+}; 

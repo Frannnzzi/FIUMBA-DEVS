@@ -42,11 +42,8 @@ app.get('/api/health', (req, res) => {
 //get all usuarios
 app.get('/api/usuarios', async (req, res) => {
     const usuarios = await getAllusuarios();
-
-    if (!usuarios){
-        return res.status(404).json({error: "No existen usuarios registrados"})
-    }
-    res.json(usuarios);
+    console.log('Usuarios desde getAllusuarios:', usuarios);
+    res.json(Object.values(usuarios));
 });
 
 //get one usuario
@@ -156,7 +153,7 @@ app.post('/api/proyectos', async (req, res) => {
         req.body.estado,
         req.body.descripcion,
         req.body.id_usuario
-    );
+);
     
     if (!proyecto) {
         return res.status(500).json({error: 'Error al crear usuario'});

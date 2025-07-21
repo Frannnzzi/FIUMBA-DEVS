@@ -1,19 +1,47 @@
-#services:
-  #postgres:
-   # image: postgres:17
-    #ports:
-     # - "5433:5432"
-    #volumes:
-     # - "./volumes/postgres/data:/var/lib/postgresql/data/"
-    #environment:
-    #  - POSTGRES_PASSWORD=augusto18
-     # - POSTGRES_USER=postgres
-     # - POSTGRES_DB=dbFiumba
+# Compose Local
+# postgresql://postgres:augusto18@db:5432/dbFiumba
+# version: '3.9'
 
+# services:
+# db:
+#   image: postgres:17
+#   container_name: postgres_local
+#   environment:
+#     POSTGRES_USER: postgres
+#     POSTGRES_PASSWORD: augusto18
+#     POSTGRES_DB: dbFiumba
+#   ports:
+#     - "5432:5432"
+#   volumes:
+#     - pgdata:/var/lib/postgresql/data
+
+#   backend:
+#     build: .
+#     ports:
+#     - "3000:3000"
+#   environment:
+#     - DATABASE_URL=postgresql://postgres:augusto18@db:5432/dbFiumba
+#   depends_on:
+#     - db
+
+#   frontend:
+#     build: ../Frontend
+#     ports:
+#     - "8080:80"
+
+# volumes:
+#   pgdata:
+
+# Compose Remoto
 services:
   backend:
     build: .
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://postgres:TU_PASSWORD@db.TU_PROYECTO.supabase.co:5432/postgres
+      - DATABASE_URL=postgresql://postgres.efelzimvqjbxwrlmsfva:fiumbadevs@aws-0-sa-east-1.pooler.supabase.com:5432/postgres
+
+  frontend:
+    build: ../Frontend
+    ports:
+      - "8080:80" #cambiar puerto

@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Mostrar saludo personalizado con el nombre del usuario
   function mostrarSaludo() {
-    const nombreUsuario = usuario.nombre || 'Usuario';
+    const nombreUsuario = usuario && usuario.nombre ? usuario.nombre : 'Usuario';
     document.getElementById('saludo-usuario').textContent = `Hola ${nombreUsuario},`;
   }
 
@@ -129,14 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Obtener novedades del localStorage
     let novedades = JSON.parse(localStorage.getItem('novedades')) || [];
     
-    // Filtrar novedades asociadas a los proyectos del usuario
-    const nombresProyectos = proyectos.map(p => p.nombre);
-    const novedadesFiltradas = novedades.filter(novedad => {
-      // Buscar el nombre del proyecto en el mensaje de la novedad
-      return nombresProyectos.some(nombre => 
-        novedad.mensaje.includes(`proyecto "${nombre}"`)
-      );
-    });
+    // Mostrar todas las novedades, sin filtrar
+    const novedadesFiltradas = novedades;
 
     if (novedadesFiltradas.length === 0) {
       listaNovedades.appendChild(mostrarMensajeNovedadesVacio());
@@ -221,6 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Función global para agregar novedades (usada en otras páginas)
   window.agregarNovedad = function(mensaje) {
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
     const nombreUsuario = usuario?.nombre || 'Usuario';
     let novedades = JSON.parse(localStorage.getItem('novedades')) || [];
     const fecha = new Date().toLocaleString('es-AR');
@@ -232,7 +227,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     localStorage.setItem('novedades', JSON.stringify(novedades));
+    console.log('Novedad guardada:', mensaje, novedades);
   };
+  console.log('Función agregarNovedad cargada');
 
   // Iniciar la aplicación
-  inicializar();
+  inicializar() 
+})
