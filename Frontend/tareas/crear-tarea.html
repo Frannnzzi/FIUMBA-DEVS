@@ -10,7 +10,7 @@
 <body>
   <nav class="barra-superior">
     <div class="logo-menu" onclick="window.location.href='../pprincipal/principal.html'">
-      <img src="../images/logo-fiumba-devs.png" alt="Logo FIUMBA DEVS" style="height: 36px; width: 36px; object-fit: contain; border-radius: 8px; background: #2d3e38;" />
+      <img id="logo-usuario" alt="Logo del Usuario">
     </div>
     <div class="navbar-central">
       <a class="nav-link" href="../pprincipal/principal.html">Inicio</a>
@@ -20,28 +20,25 @@
   </nav>
   <div class="modal-crear-tarea">
     <h2 class="titulo-crear-tarea">Crear tarea</h2>
-    <form class="form-crear-tarea">
+    <form id="form-crear-tarea" class="form-crear-tarea">
       <label class="label-form">Proyecto</label>
-      <select class="input-form-tarea select-proyecto-tarea" required>
-        <option value="">Seleccione un proyecto</option>
-      </select>
-      <label class="label-form">Título</label>
-      <input type="text" class="input-form-tarea" placeholder="Título de la tarea" required>
+      <select class="input-form-tarea select-proyecto-tarea" required></select>
+      <label class="label-form">Título de la tarea</label>
+      <input type="text" class="input-form-tarea" required>
       <label class="label-form">Descripción</label>
-      <input type="text" class="input-form-tarea" placeholder="Descripción" required>
+      <input type="text" class="input-form-tarea" required>
       <label class="label-form">Fecha final</label>
       <input type="date" class="input-form-tarea" required>
       <label class="label-form">Estado</label>
       <select class="input-form-tarea" required>
         <option value="pendiente">Pendiente</option>
         <option value="en curso">En curso</option>
-        <option value="finalizada">Finalizada</option>
       </select>
       <label class="label-form">Prioridad</label>
       <select class="input-form-tarea" required>
-        <option value="alta">Alta</option>
-        <option value="media">Media</option>
         <option value="baja">Baja</option>
+        <option value="media">Media</option>
+        <option value="alta">Alta</option>
       </select>
       <div class="botones-form">
         <button type="submit" class="btn-guardar">Guardar</button>
@@ -49,8 +46,6 @@
       </div>
     </form>
   </div>
-  <!-- Cargar primero principal.js para la función global -->
-  <script src="../pprincipal/principal.js"></script>
   <script src="crear-tarea.js"></script>
 </body>
-</html> 
+</html>

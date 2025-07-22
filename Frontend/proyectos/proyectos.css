@@ -114,16 +114,10 @@
   background: #e74c3c !important;
   color: #fff !important;
   border: 2px solid #c0392b !important;
-  border-radius: 24px;
-  font-size: 1.1em;
-  font-weight: 800;
-  transition: background 0.2s, color 0.2s;
 }
 .btn-eliminar:hover {
   background: #c0392b !important;
-  color: #fff !important;
 }
-
 .placeholder-proyecto {
   color: #b0b0b0;
   font-size: 1.1em;
@@ -158,4 +152,149 @@
   font-weight: bold;
   font-size: 0.95em;
   text-shadow: 1px 1px 2px #000;
-} 
+}
+
+/* === ESTILOS NUEVOS PARA EL MODAL DE COLABORADORES === */
+
+.btn-agregar-colaborador {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: #8ff6d5;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 2;
+}
+.btn-agregar-colaborador:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+.btn-agregar-colaborador svg {
+  display: block;
+}
+
+.modal-colaborador-oculto {
+  display: none;
+}
+
+#modal-colaborador {
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-colaborador-contenido {
+  background: #101616;
+  border: 2px solid #8ff6d5;
+  border-radius: 18px;
+  padding: 24px 28px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  width: 450px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.modal-cerrar {
+  position: absolute;
+  top: 10px; right: 16px;
+  font-size: 2em;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.modal-cerrar:hover {
+  color: #e74c3c;
+}
+
+.titulo-modal {
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-size: 1.5em;
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+#colaboradores-actuales-lista {
+  width: 100%;
+  margin-bottom: 24px;
+}
+#colaboradores-actuales-lista h4 {
+  margin: 0 0 8px 0;
+  color: #d6f8f3;
+  font-size: 1em;
+}
+#colaboradores-actuales-lista ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 120px;
+  overflow-y: auto;
+  background: #0a0f0e;
+  border-radius: 8px;
+  padding: 10px;
+}
+#colaboradores-actuales-lista li {
+  color: #fff;
+  padding: 4px 0;
+}
+
+#form-colaborador {
+  width: 100%;
+}
+
+#form-colaborador label {
+  color: #d6f8f3;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+#form-colaborador input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #8ff6d5;
+  background: #0a0f0e;
+  color: #fff;
+  margin-bottom: 16px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+.btn-modal-agregar {
+  width: 100%;
+  background: #8ff6d5;
+  color: #0a0f0e;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 700;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-modal-agregar:hover {
+  background: #253b7d;
+  color: #fff;
+}
+#mensaje-modal-colaborador {
+  margin-top: 12px;
+  color: #8ff6d5;
+  font-size: 1em;
+  min-height: 1.2em;
+  text-align: center;
+}

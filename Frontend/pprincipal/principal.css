@@ -31,6 +31,13 @@ body {
   min-height: 64px;
   gap: 24px;
 }
+#logo-usuario {
+  height: 48px;
+  width: 48px; 
+  border-radius: 50%;
+  object-fit: cover;  
+  display: block;     
+}
 .logo-menu {
   flex: 0 0 auto;
   display: flex;

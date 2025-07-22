@@ -6,6 +6,13 @@ document.addEventListener('DOMContentLoaded', function() {
     window.location.href = '../login/login.html';
     return;
   }
+  // Cambiar el logo de la barra superior por el del usuario logueado
+  const logoUsuario = document.getElementById('logo-usuario');
+  if (logoUsuario && usuario.logo) {
+    logoUsuario.src = `../images/${usuario.logo}`;
+  } else if (logoUsuario && usuario.avatar) {
+    logoUsuario.src = `../images/${usuario.avatar}`;
+  }
 
   // Variables globales para usar en toda la página
   let proyectos = [];

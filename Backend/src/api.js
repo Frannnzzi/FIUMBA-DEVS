@@ -82,23 +82,24 @@ curl --header "Content-Type: application/json" \
 */
 app.post('/api/usuarios', async (req, res) => {
 
-    if (!req.body.nombre || !req.body.apellido || !req.body.rol || !req.body.avatar ||
-    !req.body.mail) {
-    return res.status(400).json({error: "Missing required fields"});
-}
-
-    const usuario = await createUsuario(
-        req.body.nombre, 
-        req.body.apellido,
-        req.body.rol,
-        req.body.avatar,
-        req.body.mail
-    );
-    
-    if (!usuario) {
-        return res.status(500).json({error: 'Error al crear usuario'});
+    if (!req.body.nombre || !req.body.apellido || !req.body.rol || !req.body.avatar || !req.body.mail) {
+        return res.status(400).json({error: "Missing required fields"});
     }
-    res.json({usuario});
+    try {
+        const usuario = await createUsuario(
+            req.body.nombre, 
+            req.body.apellido,
+            req.body.rol,
+            req.body.avatar,
+            req.body.mail
+        );
+        if (!usuario) {
+            return res.status(500).json({error: 'Error al crear usuario'});
+        }
+        res.json({usuario});
+    } catch (err) {
+        res.status(500).json({error: err.message || 'Error interno al crear usuario'});
+    }
 });
 
 //delete usuario

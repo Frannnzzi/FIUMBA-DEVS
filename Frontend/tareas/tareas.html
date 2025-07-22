@@ -10,7 +10,7 @@
 <body>
   <nav class="barra-superior">
     <div class="logo-menu" onclick="window.location.href='../pprincipal/principal.html'">
-      <img src="../images/Untitled_logo_1_free-file.jpg" alt="Logo FIUMBA DEVS" style="height: 36px; width: 36px; object-fit: contain; border-radius: 8px; background: #2d3e38;" />
+      <img id="logo-usuario" alt="Logo del Usuario">
     </div>
     <div class="navbar-central">
       <a class="nav-link" href="../pprincipal/principal.html">Inicio</a>
@@ -27,7 +27,7 @@
     </div>
     <div class="kanban-board">
       <div class="kanban-col" id="col-sin-asignar">
-        <h2 class="kanban-titulo">Sin asignar</h2>
+        <h2 class="kanban-titulo">Pendiente</h2>
         <div class="kanban-lista" id="lista-sin-asignar"></div>
       </div>
       <div class="kanban-col" id="col-en-curso">
@@ -35,11 +35,11 @@
         <div class="kanban-lista" id="lista-en-curso"></div>
       </div>
       <div class="kanban-col" id="col-terminado">
-        <h2 class="kanban-titulo">Terminado</h2>
+        <h2 class="kanban-titulo">Finalizada</h2>
         <div class="kanban-lista" id="lista-terminado"></div>
       </div>
     </div>
   </main>
   <script src="tareas.js"></script>
 </body>
-</html> 
+</html>

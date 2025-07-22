@@ -70,8 +70,11 @@ body {
 }
 .opciones-logo {
   display: flex;
-  gap: 16px;
-  margin-top: 4px;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 12px;
+  margin-top: 8px;
 }
 .logo-color-1 { background: #8ff6d5; }
 .logo-color-2 { background: #253b7d; }
@@ -85,6 +88,14 @@ body {
   cursor: pointer;
   transition: border 0.2s, box-shadow 0.2s;
   outline: none;
+  padding: 0;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .boton-logo.seleccionado, .boton-logo:focus {
   border: 3px solid #8ff6d5;
@@ -100,7 +111,18 @@ body {
   font-weight: 700;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
-  margin-top: 8px;
+  margin-top: 16px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  max-width: 320px;
+  min-width: 180px;
+  padding: 16px 0;
+  font-size: 1.2rem;
+  border-radius: 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 .boton-principal:hover {
   background: #253b7d;
@@ -125,6 +147,16 @@ body {
   min-height: 24px;
   margin-top: 8px;
   font-weight: 600;
+}
+.img-logo-registro {
+  width: 90px;
+  height: 90px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px #222;
+  background: none;
+  display: block;
+  transition: box-shadow 0.2s;
 }
 @media (max-width: 600px) {
   .contenedor-formulario-registro {

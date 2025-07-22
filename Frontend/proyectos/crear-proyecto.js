@@ -1,18 +1,25 @@
-// Página de crear proyecto - Maneja la creación de nuevos proyectos
 document.addEventListener('DOMContentLoaded', function() {
-  const form = document.querySelector('.form-crear-proyecto');
-  const usuario = JSON.parse(localStorage.getItem('usuario'));
 
-  // Validar fechas del proyecto
-  function validarFechas(fechaInicio, fechaFinal) {
-    if (fechaFinal < fechaInicio) {
-      alert('La fecha final no puede ser menor a la fecha de inicio.');
-      return false;
-    }
-    return true;
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  if (!usuario) {
+    window.location.href = '../login/login.html';
+    return;
+  }
+  
+  const mapaAvatares = {
+    1: '../images/logo1.jpeg',
+    2: '../images/logo2.jpeg',
+    3: '../images/logo3.jpeg',
+    4: '../images/logo4.jpeg',
+  };
+  const rutaAvatar = mapaAvatares[usuario.avatar];
+  const logoUsuario = document.getElementById('logo-usuario');
+  if (logoUsuario && rutaAvatar) {
+    logoUsuario.src = rutaAvatar;
   }
 
-  // Obtener datos del formulario
+  const form = document.getElementById('form-crear-proyecto');
+
   function obtenerDatosFormulario(form) {
     const campos = form.querySelectorAll('.input-form-proyecto');
     return {
@@ -24,19 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 
-  // Verificar que el usuario esté logueado
-  function verificarUsuario() {
-    const usuario = JSON.parse(localStorage.getItem('usuario'));
-    if (!usuario) {
-      alert('Debes estar logueado para crear un proyecto.');
-      return null;
-    }
-    return usuario;
-  }
-
-  console.log(usuario.id_usuario)
-
-  // Enviar proyecto al backend
   async function crearProyecto(datos, idUsuario) {
     const respuesta = await fetch('http://localhost:3000/api/proyectos', {
       method: 'POST',
@@ -46,66 +40,25 @@ document.addEventListener('DOMContentLoaded', function() {
         id_usuario: idUsuario
       })
     });
-
     if (!respuesta.ok) {
-      const error = await respuesta.json();
-      throw new Error(error.error || 'Error al crear el proyecto');
+      throw new Error('Error al crear el proyecto');
     }
-
     return await respuesta.json();
   }
 
-  // Manejar el envío del formulario
-  if (form) {
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      try {
-        // Obtener datos del formulario
-        const datos = obtenerDatosFormulario(form);
-
-        // Validar fechas
-        if (!validarFechas(datos.fecha_inicio, datos.fecha_final)) {
-          return;
-        }
-
-        // Verificar usuario logueado
-        const usuario = verificarUsuario();
-        if (!usuario) {
-          return;
-        }
-
-        // Crear proyecto en el backend
-        await crearProyecto(datos, usuario.id_usuario);
-
-        // Agregar novedad con mensaje corto
-        const usuarioActual = JSON.parse(localStorage.getItem('usuario'));
-        const mensajeNovedad = `${usuarioActual?.nombre || 'Usuario'} creó el proyecto "${datos.nombre}"`;
-        window.agregarNovedad?.(mensajeNovedad);
-
-        // Esperar antes de redirigir
-        setTimeout(() => {
-          window.location.href = 'proyectos.html';
-        }, 150);
-
-      } catch (error) {
-        console.error('Error al crear proyecto:', error);
-        alert(error.message || 'Error de conexión con el servidor');
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    try {
+      const datos = obtenerDatosFormulario(form);
+      if (datos.fecha_final < datos.fecha_inicio) {
+        alert('La fecha final no puede ser menor a la fecha de inicio.');
+        return;
       }
-    });
-  }
-});
-
-window.agregarNovedad = function(mensaje) {
-  const usuario = JSON.parse(localStorage.getItem('usuario'));
-  const nombreUsuario = usuario?.nombre || 'Usuario';
-  let novedades = JSON.parse(localStorage.getItem('novedades')) || [];
-  const fecha = new Date().toLocaleString('es-AR');
-  novedades.push({ 
-    usuario: nombreUsuario, 
-    mensaje, 
-    fecha 
+      await crearProyecto(datos, usuario.id_usuario);
+      window.location.href = '../proyectos/proyectos.html';
+    } catch (error) {
+      console.error('Error al crear proyecto:', error);
+      alert(error.message);
+    }
   });
-  localStorage.setItem('novedades', JSON.stringify(novedades));
-  console.log('Novedad guardada:', mensaje, novedades);
-}; 
+});

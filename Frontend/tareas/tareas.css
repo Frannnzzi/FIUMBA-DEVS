@@ -63,6 +63,8 @@
   flex-direction: column;
   gap: 28px;
   align-items: center;
+  max-height: 420px;
+  overflow-y: auto;
 }
 .kanban-tarjeta {
   background: #0a0f0e;

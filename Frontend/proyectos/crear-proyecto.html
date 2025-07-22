@@ -10,21 +10,21 @@
 <body>
   <nav class="barra-superior">
     <div class="logo-menu" onclick="window.location.href='../pprincipal/principal.html'">
-      <img src="../images/Untitled_logo_1_free-file.jpg" alt="Logo FIUMBA DEVS" style="height: 36px; width: 36px; object-fit: contain; border-radius: 8px; background: #2d3e38;" />
+      <img id="logo-usuario" alt="Logo del Usuario">
     </div>
     <div class="navbar-central">
       <a class="nav-link" href="../pprincipal/principal.html">Inicio</a>
-      <a class="nav-link" href="proyectos.html">Proyectos</a>
+      <a class="nav-link" href="../proyectos/proyectos.html">Proyectos</a>
       <a class="nav-link" href="../tareas/tareas.html">Tareas</a>
     </div>
   </nav>
   <div class="modal-crear-proyecto">
     <h2 class="titulo-crear-proyecto">Crear proyecto</h2>
-    <form class="form-crear-proyecto">
+    <form id="form-crear-proyecto" class="form-crear-proyecto">
       <label class="label-form">Nombre del proyecto</label>
-      <input type="text" class="input-form-proyecto" placeholder="Nombre del proyecto" required>
+      <input type="text" class="input-form-proyecto" required>
       <label class="label-form">Descripción</label>
-      <input type="text" class="input-form-proyecto" placeholder="Descripción" required>
+      <input type="text" class="input-form-proyecto" required>
       <label class="label-form">Fecha de inicio</label>
       <input type="date" class="input-form-proyecto" required>
       <label class="label-form">Fecha final</label>
@@ -37,12 +37,10 @@
       </select>
       <div class="botones-form">
         <button type="submit" class="btn-guardar">Guardar</button>
-        <button type="button" class="btn-cancelar" onclick="window.location.href='proyectos.html'">Cancelar</button>
+        <button type="button" class="btn-cancelar" onclick="window.location.href='../proyectos/proyectos.html'">Cancelar</button>
       </div>
     </form>
   </div>
-  <!-- Cargar primero principal.js para la función global -->
-  <script src="../pprincipal/principal.js"></script>
   <script src="crear-proyecto.js"></script>
 </body>
-</html> 
+</html>
