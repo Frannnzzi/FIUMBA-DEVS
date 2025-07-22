@@ -34,8 +34,10 @@ CREATE TABLE public.tareas (
 	CONSTRAINT tareas_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario)
 );
 
-INSERT INTO usuarios (
-	nombre, apellido, rol, avatar, mail
-) VALUES (
-	'Franco', 'Finazzi', 'Director', 1, 'franco.finazzi@gmail.com'
+CREATE TABLE public.usuarios_proyectos (
+	id_usuario int4 NOT NULL,
+	id_proyecto int4 NOT NULL,
+	CONSTRAINT usuarios_proyectos_pkey PRIMARY KEY (id_usuario, id_proyecto),
+	CONSTRAINT usuarios_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario) ON DELETE CASCADE,
+	CONSTRAINT proyectos_id_proyecto_fkey FOREIGN KEY (id_proyecto) REFERENCES public.proyectos(id_proyecto) ON DELETE CASCADE,
 );

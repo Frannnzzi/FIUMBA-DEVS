@@ -28,13 +28,14 @@ async function getAllusuarios() {
             proyectos.id_proyecto, 
             proyectos.nombre AS nombre_proyecto
         FROM usuarios LEFT JOIN proyectos ON usuarios.id_usuario = proyectos.id_usuario 
-    `); // Usamos un LEFT JOIN para poder traernos de la base de datos tambien los usuarios que no tienen proyectos
+    `);
 
     const usuarios = {};
 
     result.rows.forEach((row) => {
         if (!usuarios[row.id_usuario]) {
             usuarios[row.id_usuario] = {
+                id_usuario: row.id_usuario,
                 nombre: row.nombre_usuario,
                 apellido: row.apellido,
                 rol: row.rol,
@@ -44,7 +45,7 @@ async function getAllusuarios() {
             };
         }
 
-        if (row.id_proyecto) {  // En este if chequeamos que el usuario tenga proyectos de manera que si no tiene no se creen proyectos con null
+        if (row.id_proyecto) {
             usuarios[row.id_usuario].proyectos.push({
                 id_proyecto: row.id_proyecto,
                 nombre: row.nombre_proyecto
@@ -52,7 +53,7 @@ async function getAllusuarios() {
         }  
     });
 
-    return usuarios;
+    return Object.values(usuarios);
 }
 
 async function getOneusuario(id_usuario){
@@ -97,6 +98,16 @@ async function getOneusuario(id_usuario){
 
 }
 
+async function usuariosDeProyecto(id_proyecto){
+    const result = await dbclient.query('SELECT * FROM usuarios u JOIN usuarios_proyectos up ON u.id_usuario = up.id_usuario WHERE up.id_proyecto = $1', [id_proyecto]);
+
+    if (result.rowCount === 0){
+        return undefined;
+    }
+
+    return result.rows;
+}
+
 async function createUsuario(nombre, apellido, rol, avatar, mail){
     const result = await dbclient.query('INSERT INTO usuarios (nombre, apellido, rol, avatar, mail) VALUES($1, $2, $3, $4, $5)',
          [nombre, apellido, rol, avatar, mail]);
@@ -120,4 +131,5 @@ module.exports = {
     getOneusuario,
     createUsuario,
     deleteUsuario,
+    usuariosDeProyecto
 };

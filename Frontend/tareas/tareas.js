@@ -124,8 +124,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (nuevaPrioridad === null) return;
 
     try {
-      const respuesta = await fetch('http://localhost:3000/api/tareas', {
-        method: 'PUT',
+      const respuesta = await fetch(`http://localhost:3000/api/tareas/${tarea.id_tarea}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id_tarea: tarea.id_tarea,
@@ -140,6 +140,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       if (respuesta.ok) {
+        // Novedad: edición de tarea
+        const usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+        const mensajeNovedad = `${usuarioActual?.nombre || 'Usuario'} editó la tarea "${nuevoTitulo}".`;
+        window.agregarNovedad?.(mensajeNovedad);
         location.reload(); // Recargar para mostrar los cambios
       } else {
         alert('Error al actualizar la tarea');
@@ -159,6 +163,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       if (respuesta.ok) {
+        // Novedad: eliminación de tarea
+        const usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+        const mensajeNovedad = `${usuarioActual?.nombre || 'Usuario'} eliminó la tarea "${tarea.titulo}".`;
+        window.agregarNovedad?.(mensajeNovedad);
         location.reload(); // Recargar para mostrar los cambios
       } else {
         alert('Error al eliminar la tarea');
@@ -189,13 +197,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const tarea = tareas.find(t => t.id_tarea == idTarea);
         if (tarea && tarea.estado !== nuevoEstado) {
           try {
-            const respuesta = await fetch('http://localhost:3000/api/tareas', {
-              method: 'PUT',
+            const respuesta = await fetch(`http://localhost:3000/api/tareas/${tarea.id_tarea}`, {
+              method: 'PATCH',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ ...tarea, estado: nuevoEstado })
             });
 
             if (respuesta.ok) {
+              // Novedad: cambio de estado
+              const usuarioActual = JSON.parse(localStorage.getItem('usuario'));
+              const mensajeNovedad = `${usuarioActual?.nombre || 'Usuario'} cambió el estado de la tarea "${tarea.titulo}" a ${nuevoEstado}.`;
+              window.agregarNovedad?.(mensajeNovedad);
               location.reload(); // Recargar para mostrar los cambios
             } else {
               alert('Error al actualizar el estado de la tarea');

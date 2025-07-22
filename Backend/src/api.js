@@ -13,6 +13,7 @@ const {
     getOneusuario,
     createUsuario,
     deleteUsuario,
+    usuariosDeProyecto
 } = require('./usuarios');
 
 const { 
@@ -33,6 +34,11 @@ const {
     updateTarea
 } = require('./tareas');
 
+const { 
+    agregarUsuarioAProyecto,
+    deleteUsuarioDeProyecto
+} = require('./usuario_proyectos');
+
 //health route
 app.get('/api/health', (req, res) => {
     res.json({status: "Levantado"});
@@ -42,11 +48,8 @@ app.get('/api/health', (req, res) => {
 //get all usuarios
 app.get('/api/usuarios', async (req, res) => {
     const usuarios = await getAllusuarios();
-
-    if (!usuarios){
-        return res.status(404).json({error: "No existen usuarios registrados"})
-    }
-    res.json(usuarios);
+    console.log('Usuarios desde getAllusuarios:', usuarios);
+    res.json(Object.values(usuarios));
 });
 
 //get one usuario
@@ -59,6 +62,16 @@ app.get('/api/usuarios/:id_usuario', async (req, res) => {
     res.json(usuario);
 });
 
+//get usuarios by proyecto id
+app.get('/api/usuarios/proyectos/:id_proyecto', async (req, res) => {
+    const usuarios = await usuariosDeProyecto(req.params.id_proyecto);
+
+    if (!usuarios){
+        return res.status(404).json({error: 'Proyecto not found'})
+    }
+
+    res.json(usuarios);
+  });
 
 //insert usuario
 /*
@@ -116,7 +129,7 @@ app.get('/api/proyectos', async (req, res) => {
 //get all proyectos by id_usuario
 app.get('/api/proyectos/usuarios/:id_usuario', async (req, res) => {
     const proyectos = await getAllporyectosByUsuarioId(req.params.id_usuario);
-
+    
     if (!proyectos){
         return res.status(404).json({error:"Usuario not found"})
     }
@@ -134,6 +147,7 @@ app.get('/api/proyectos/:id_proyecto', async (req, res) => {
     }
     res.json(proyecto);
 });
+
 
 //insert proyecto
 /*
@@ -156,7 +170,7 @@ app.post('/api/proyectos', async (req, res) => {
         req.body.estado,
         req.body.descripcion,
         req.body.id_usuario
-    );
+);
     
     if (!proyecto) {
         return res.status(500).json({error: 'Error al crear usuario'});
@@ -289,7 +303,40 @@ app.patch('/api/tareas/:id_tarea', async (req, res) => {
     res.json(tareaActualizada);
 })
 
-app.listen(PORT, () => {
+// usuarios_proyectos
+// insertar un usuario a un proyecto
+/*
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"id_usuario":"2", "id_proyecto":"29"}' \
+  http://localhost:3000/api/colaboradores
+*/
+app.post('/api/colaboradores', async (req, res) => {
+    const { id_usuario, id_proyecto } = req.body;
+    if (!id_usuario || !id_proyecto) {
+      return res.status(400).json({ error: "Faltan datos" });
+    }
+    const resultado = await agregarUsuarioAProyecto(id_usuario, id_proyecto);
+
+    res.json({resultado});
+  });
+
+//delete usuario de proyecto
+/*
+curl --request DELETE http://localhost:3000/api/colaboradores
+*/
+  app.delete('/api/colaboradores/:id_usuario/:id_proyecto', async (req, res) => {
+    const id_usuario = req.params.id_usuario;
+    const id_proyecto = req.params.id_proyecto;
+
+    if (!id_usuario || !id_proyecto) {
+      return res.status(400).json({ error: "Faltan datos" });
+    }
+    const resultado = await deleteUsuarioDeProyecto(id_usuario, id_proyecto);
+    res.json({ resultado });
+  });
+
+app.listen(PORT, '0.0.0.0', () => {
     console.log("Server Listening on PORT:", PORT);
   });
 
