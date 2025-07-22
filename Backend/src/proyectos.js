@@ -21,7 +21,7 @@ async function getAllproyectos() {
 }
 
 async function getAllporyectosByUsuarioId(id_usuario){
-    const result = await dbclient.query('SELECT * FROM proyectos WHERE id_usuario = $1', [id_usuario]);
+    const result = await dbclient.query('SELECT * FROM proyectos p JOIN usuarios_proyectos up ON p.id_proyecto = up.id_proyecto WHERE id_usuario = $1', [id_usuario]);
     if (result.rowCount === 0){
         return undefined;
     }
@@ -35,10 +35,17 @@ async function getOneproyecto(id_proyecto){
 
 async function createProyecto(nombre, fecha_inicio, fecha_final, estado, descripcion, id_usuario){
     const result = await dbclient.query(
-      'INSERT INTO proyectos (nombre, fecha_inicio, fecha_final, estado, descripcion, id_usuario) VALUES($1, $2, $3, $4, $5, $6)',
+      'INSERT INTO proyectos (nombre, fecha_inicio, fecha_final, estado, descripcion, id_usuario) VALUES($1, $2, $3, $4, $5, $6) RETURNING id_proyecto',
       [nombre, fecha_inicio, fecha_final, estado, descripcion, id_usuario]
     );
-    return result.rowCount;
+
+    const id_proyecto = result.rows[0].id_proyecto; 
+
+    await dbclient.query(
+        'INSERT INTO usuarios_proyectos (id_usuario, id_proyecto) VALUES ($1, $2)', [id_usuario, id_proyecto]
+    );
+
+    return result.rows[0];
 }
 
 

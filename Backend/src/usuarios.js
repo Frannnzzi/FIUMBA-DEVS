@@ -53,7 +53,6 @@ async function getAllusuarios() {
         }  
     });
 
-    // ¡ESTA LÍNEA ES LA CLAVE!
     return Object.values(usuarios);
 }
 
@@ -99,6 +98,16 @@ async function getOneusuario(id_usuario){
 
 }
 
+async function usuariosDeProyecto(id_proyecto){
+    const result = await dbclient.query('SELECT * FROM usuarios u JOIN usuarios_proyectos up ON u.id_usuario = up.id_usuario WHERE up.id_proyecto = $1', [id_proyecto]);
+
+    if (result.rowCount === 0){
+        return undefined;
+    }
+
+    return result.rows;
+}
+
 async function createUsuario(nombre, apellido, rol, avatar, mail){
     const result = await dbclient.query('INSERT INTO usuarios (nombre, apellido, rol, avatar, mail) VALUES($1, $2, $3, $4, $5)',
          [nombre, apellido, rol, avatar, mail]);
@@ -122,4 +131,5 @@ module.exports = {
     getOneusuario,
     createUsuario,
     deleteUsuario,
+    usuariosDeProyecto
 };

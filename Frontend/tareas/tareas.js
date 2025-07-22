@@ -124,8 +124,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (nuevaPrioridad === null) return;
 
     try {
-      const respuesta = await fetch('http://localhost:3000/api/tareas', {
-        method: 'PUT',
+      const respuesta = await fetch(`http://localhost:3000/api/tareas/${tarea.id_tarea}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id_tarea: tarea.id_tarea,
@@ -197,8 +197,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const tarea = tareas.find(t => t.id_tarea == idTarea);
         if (tarea && tarea.estado !== nuevoEstado) {
           try {
-            const respuesta = await fetch('http://localhost:3000/api/tareas', {
-              method: 'PUT',
+            const respuesta = await fetch(`http://localhost:3000/api/tareas/${tarea.id_tarea}`, {
+              method: 'PATCH',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ ...tarea, estado: nuevoEstado })
             });

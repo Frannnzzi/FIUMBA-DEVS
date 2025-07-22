@@ -118,8 +118,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     try {
       // Enviar cambios al backend
-      const respuesta = await fetch('http://localhost:3000/api/proyectos', {
-        method: 'PUT',
+      const respuesta = await fetch(`http://localhost:3000/api/proyectos/${proyecto.id_proyecto}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id_proyecto: proyecto.id_proyecto,
