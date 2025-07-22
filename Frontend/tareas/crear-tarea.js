@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function cargarProyectos() {
     try {
-      const respuesta = await fetch('http://localhost:3000/api/proyectos');
+      const respuesta = await fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`);
       const proyectos = await respuesta.json();
       const proyectosUsuario = proyectos.filter(p => p.id_usuario === usuario.id_usuario);
       

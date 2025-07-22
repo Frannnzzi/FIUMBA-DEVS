@@ -21,7 +21,7 @@ async function getAllproyectos() {
 }
 
 async function getAllporyectosByUsuarioId(id_usuario){
-    const result = await dbclient.query('SELECT * FROM proyectos p JOIN usuarios_proyectos up ON p.id_proyecto = up.id_proyecto WHERE id_usuario = $1', [id_usuario]);
+    const result = await dbclient.query('SELECT * FROM proyectos p JOIN usuarios_proyectos up ON p.id_proyecto = up.id_proyecto WHERE up.id_usuario = $1', [id_usuario]);
     if (result.rowCount === 0){
         return undefined;
     }

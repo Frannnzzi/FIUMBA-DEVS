@@ -34,6 +34,16 @@
 
 # Compose Remoto
 services:
+  db:
+    image: postgres:17
+    container_name: postgres_remote
+    environment:
+      - DATABASE_URL=postgresql://postgres.efelzimvqjbxwrlmsfva:fiumbadevs@aws-0-sa-east-1.pooler.supabase.com:5432/postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   backend:
     build: .
     ports:
@@ -46,4 +56,9 @@ services:
   frontend:
     build: ../Frontend
     ports:
-      - "8080:80" #cambiar puerto
+      - "8080:80"
+    volumes:
+      - .:/Frontend/app
+
+volumes:
+  pgdata:

@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       // Traer proyectos y tareas en paralelo para ser más rápido
       const [respuestaProyectos, respuestaTareas] = await Promise.all([
-        fetch('http://localhost:3000/api/proyectos'),
+        fetch('http://localhost:3000/api/proyectos/id_usuario'),
         fetch('http://localhost:3000/api/tareas')
       ]);
 

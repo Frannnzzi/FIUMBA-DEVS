@@ -258,29 +258,22 @@ document.addEventListener('DOMContentLoaded', function() {
       alert('No se pudo eliminar el proyecto: ' + error.message);
     }
   }
-  function buscarProyectos() { /* ...tu código de buscar ... */ }
-  function configurarBusqueda() { /* ...tu código de configurar búsqueda ... */ }
 
   async function cargarDatos() {
     try {
-      const [respuestaProyectos, respuestaTareas, respuestaUsuarios] = await Promise.all([
-        fetch('http://localhost:3000/api/proyectos'),
-        fetch('http://localhost:3000/api/tareas'),
-        fetch('http://localhost:3000/api/usuarios'),
+      const [respuestaProyectos, respuestaUsuarios] = await Promise.all([
+        fetch(`http://localhost:3000/api/proyectos/usuarios/${id_usuario}`),
+        fetch(`http://localhost:3000/api/usuarios/proyectos/${proyecto.id_proyecto}`),
       ]);
       if (!respuestaProyectos.ok) throw new Error(`Error al cargar proyectos: ${respuestaProyectos.status}`);
-      if (!respuestaTareas.ok) throw new Error(`Error al cargar tareas: ${respuestaTareas.status}`);
       if (!respuestaUsuarios.ok) throw new Error(`Error al cargar usuarios: ${respuestaUsuarios.status}`);
       const proyectosData = await respuestaProyectos.json();
-      const tareasData = await respuestaTareas.json();
       todosLosUsuarios = await respuestaUsuarios.json();
       proyectos = proyectosData.filter(p => p.id_usuario === usuario.id_usuario);
-      tareas = tareasData;
       renderizarProyectos(proyectos);
     } catch (error) {
       console.error('Error al cargar los datos:', error);
       proyectos = [];
-      tareas = [];
       renderizarProyectos(proyectos);
     }
   }

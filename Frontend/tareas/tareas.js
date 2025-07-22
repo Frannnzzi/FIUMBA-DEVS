@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // Mapea el estado del Kanban al estado del backend
+  function mapearEstadoBackend(estadoKanban) {
+    if (estadoKanban === 'en-curso') return 'en curso';
+    if (estadoKanban === 'terminado') return 'finalizada';
+    return 'pendiente';
+  }
   // Obtener id_proyecto de la URL si existe
   function getIdProyectoFromUrl() {
     const params = new URLSearchParams(window.location.search);
