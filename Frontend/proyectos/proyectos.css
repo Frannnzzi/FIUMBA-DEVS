@@ -1,3 +1,51 @@
+/* Modal editar proyecto */
+.modal-editar-proyecto-oculto {
+  display: none !important;
+}
+#modal-editar-proyecto {
+  position: fixed;
+  z-index: 1001;
+  left: 0; top: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-editar-proyecto-contenido {
+  background: #101616;
+  border: 2px solid #8ff6d5;
+  border-radius: 18px;
+  padding: 24px 28px;
+  min-width: 320px;
+  max-width: 400px;
+  box-shadow: 0 4px 24px #000a;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+.btn-modal-editar {
+  margin-top: 16px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #8ff6d5;
+  color: #222;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#form-editar-proyecto select {
+  margin-bottom: 0;
+}
+.btn-modal-editar:hover {
+  background: #6be3c1;
+}
 @import url('../pprincipal/principal.css');
 
 .main-proyectos {
@@ -181,7 +229,7 @@
 }
 
 .modal-colaborador-oculto {
-  display: none;
+  display: none !important;
 }
 
 #modal-colaborador {
@@ -210,10 +258,26 @@
 
 .modal-cerrar {
   position: absolute;
-  top: 10px; right: 16px;
-  font-size: 2em;
-  color: #fff;
+  top: 12px;
+  right: 16px;
+  font-size: 1.5em;
+  color: #8ff6d5;
   cursor: pointer;
+  background: none;
+  border: none;
+  z-index: 2;
+  transition: color 0.2s;
+}
+.modal-cerrar {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 1.5em;
+  color: #8ff6d5;
+  cursor: pointer;
+  background: none;
+  border: none;
+  z-index: 2;
   transition: color 0.2s;
 }
 .modal-cerrar:hover {

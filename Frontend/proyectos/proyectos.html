@@ -45,6 +45,33 @@
     </div>
   </div>
 
+  <script src="../common/user-avatar.js"></script>
   <script src="proyectos.js"></script>
+</body>
+<!-- Modal de edición de proyecto -->
+<div id="modal-editar-proyecto" class="modal-editar-proyecto-oculto">
+  <div class="modal-editar-proyecto-contenido">
+    <span class="modal-cerrar" id="modal-editar-cerrar-btn">&times;</span>
+    <h3 class="titulo-modal">Editar Proyecto</h3>
+    <form id="form-editar-proyecto">
+      <label for="editar-nombre">Nombre:</label>
+      <input type="text" id="editar-nombre" required>
+      <label for="editar-descripcion">Descripción:</label>
+      <input type="text" id="editar-descripcion" required>
+      <label for="editar-fecha-inicio">Fecha de inicio:</label>
+      <input type="date" id="editar-fecha-inicio" required>
+      <label for="editar-fecha-final">Fecha final:</label>
+      <input type="date" id="editar-fecha-final" required>
+      <label for="editar-estado">Estado:</label>
+      <select id="editar-estado" required>
+        <option value="pendiente">Pendiente</option>
+        <option value="en curso">En curso</option>
+        <option value="finalizado">Finalizado</option>
+      </select>
+      <div id="mensaje-modal-editar"></div>
+      <button type="submit" class="btn-modal-editar">Guardar cambios</button>
+    </form>
+  </div>
+</div>
 </body>
 </html>

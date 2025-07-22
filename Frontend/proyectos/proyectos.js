@@ -27,8 +27,21 @@ document.addEventListener('DOMContentLoaded', function() {
   let proyectoSeleccionadoId = null;
   let todosLosUsuarios = [];
   let proyectos = [];
+  // Modal editar proyecto
+  const modalEditar = document.getElementById('modal-editar-proyecto');
+  const formEditarProyecto = document.getElementById('form-editar-proyecto');
+  const inputEditarNombre = document.getElementById('editar-nombre');
+  const inputEditarDescripcion = document.getElementById('editar-descripcion');
+  const inputEditarFechaInicio = document.getElementById('editar-fecha-inicio');
+  const inputEditarFechaFinal = document.getElementById('editar-fecha-final');
+  const selectEditarEstado = document.getElementById('editar-estado');
+  const btnCerrarModalEditar = document.getElementById('modal-editar-cerrar-btn');
+  const mensajeModalEditar = document.getElementById('mensaje-modal-editar');
+  let proyectoEditando = null;
   let tareas = [];
   const lista = document.querySelector('.lista-proyectos');
+  const inputBuscarProyecto = document.querySelector('.input-buscar-proyecto');
+  let proyectosFiltrados = [];
 
   function formatearFecha(fecha) {
     if (!fecha) return '';
@@ -104,10 +117,12 @@ document.addEventListener('DOMContentLoaded', function() {
       listaColaboradoresActuales.innerHTML = `<li>${error.message}</li>`;
     }
     modal.classList.remove('modal-colaborador-oculto');
+    modal.style.display = 'flex';
   }
 
   function cerrarModal() {
     modal.classList.add('modal-colaborador-oculto');
+    modal.style.display = 'none';
   }
 
   async function manejarSubmitColaborador(e) {
@@ -157,10 +172,92 @@ document.addEventListener('DOMContentLoaded', function() {
       const tarjeta = crearTarjetaProyecto(proyecto);
       lista.appendChild(tarjeta);
     });
+  // Filtrado en tiempo real
+  if (inputBuscarProyecto) {
+    inputBuscarProyecto.addEventListener('input', function() {
+      const texto = inputBuscarProyecto.value.trim().toLowerCase();
+      if (texto === '') {
+        renderizarProyectos(proyectos);
+      } else {
+        proyectosFiltrados = proyectos.filter(p =>
+          p.nombre.toLowerCase().includes(texto) ||
+          (p.descripcion && p.descripcion.toLowerCase().includes(texto))
+        );
+        renderizarProyectos(proyectosFiltrados);
+      }
+    });
+  }
   }
 
-  async function editarProyecto(proyecto) { /* ...tu código de editar ... */ }
-  async function eliminarProyecto(proyecto) { /* ...tu código de eliminar ... */ }
+  async function editarProyecto(proyecto) {
+    // Mostrar modal y cargar datos
+    proyectoEditando = proyecto;
+    inputEditarNombre.value = proyecto.nombre;
+    inputEditarDescripcion.value = proyecto.descripcion;
+    inputEditarFechaInicio.value = proyecto.fecha_inicio ? proyecto.fecha_inicio.slice(0,10) : '';
+    inputEditarFechaFinal.value = proyecto.fecha_final ? proyecto.fecha_final.slice(0,10) : '';
+    selectEditarEstado.value = proyecto.estado || 'pendiente';
+    mensajeModalEditar.textContent = '';
+    modalEditar.classList.remove('modal-editar-proyecto-oculto');
+    modalEditar.style.display = 'flex';
+  }
+  function cerrarModalEditar() {
+    modalEditar.classList.add('modal-editar-proyecto-oculto');
+    modalEditar.style.display = 'none';
+    proyectoEditando = null;
+  }
+  if (btnCerrarModalEditar) {
+    btnCerrarModalEditar.addEventListener('click', cerrarModalEditar);
+  }
+  if (formEditarProyecto) {
+    formEditarProyecto.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (!proyectoEditando) return;
+      const nuevoNombre = inputEditarNombre.value.trim();
+      const nuevaDescripcion = inputEditarDescripcion.value.trim();
+      const nuevaFechaInicio = inputEditarFechaInicio.value;
+      const nuevaFechaFinal = inputEditarFechaFinal.value;
+      const nuevoEstado = selectEditarEstado.value;
+      if (!nuevoNombre || !nuevaDescripcion || !nuevaFechaInicio || !nuevaFechaFinal || !nuevoEstado) {
+        mensajeModalEditar.textContent = 'Completa todos los campos.';
+        return;
+      }
+      if (nuevaFechaFinal < nuevaFechaInicio) {
+        mensajeModalEditar.textContent = 'La fecha final no puede ser menor a la fecha de inicio.';
+        return;
+      }
+      try {
+        const res = await fetch(`http://localhost:3000/api/proyectos/${proyectoEditando.id_proyecto}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre: nuevoNombre,
+            descripcion: nuevaDescripcion,
+            fecha_inicio: nuevaFechaInicio,
+            fecha_final: nuevaFechaFinal,
+            estado: nuevoEstado
+          })
+        });
+        if (!res.ok) throw new Error('Error al editar el proyecto');
+        cerrarModalEditar();
+        await cargarDatos();
+      } catch (error) {
+        mensajeModalEditar.textContent = 'No se pudo editar: ' + error.message;
+      }
+    });
+  }
+  async function eliminarProyecto(proyecto) {
+    if (!confirm('¿Seguro que quieres eliminar este proyecto?')) return;
+    try {
+      const res = await fetch(`http://localhost:3000/api/proyectos/${proyecto.id_proyecto}`, {
+        method: 'DELETE'
+      });
+      if (!res.ok) throw new Error('Error al eliminar el proyecto');
+      await cargarDatos();
+    } catch (error) {
+      alert('No se pudo eliminar el proyecto: ' + error.message);
+    }
+  }
   function buscarProyectos() { /* ...tu código de buscar ... */ }
   function configurarBusqueda() { /* ...tu código de configurar búsqueda ... */ }
 
@@ -187,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
       renderizarProyectos(proyectos);
     }
   }
-  
+
   if(modal) {
     btnCerrarModal.addEventListener('click', cerrarModal);
     formColaborador.addEventListener('submit', manejarSubmitColaborador);
@@ -195,4 +292,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
   cargarDatos();
   configurarBusqueda();
+
 });

@@ -74,8 +74,8 @@ document.addEventListener('DOMContentLoaded', function() {
           alert('Por favor, seleccione un proyecto.');
           return;
       }
-      await crearTarea(datos, usuario.id_usuario);
-      window.location.href = 'tareas.html';
+      const tareaCreada = await crearTarea(datos, usuario.id_usuario);
+      window.location.href = `tareas.html?id_proyecto=${datos.id_proyecto}`;
     } catch (error) {
       console.error('Error al crear tarea:', error);
       alert(error.message);

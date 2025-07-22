@@ -72,30 +72,29 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 24px;
-  margin-bottom: 12px;
-  margin-top: 8px;
+  gap: 32px;
+  margin-bottom: 20px;
+  margin-top: 16px;
+  padding: 10px;
 }
 .logo-color-1 { background: #8ff6d5; }
 .logo-color-2 { background: #253b7d; }
 .logo-color-3 { background: #d6f8f3; }
 .logo-color-4 { background: #4a4ae6; }
 .boton-logo {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  border: 2px solid #101616;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid transparent;
   cursor: pointer;
   transition: border 0.2s, box-shadow 0.2s;
   outline: none;
   padding: 0;
   background: none;
-  border: none;
-  outline: none;
-  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 .boton-logo.seleccionado, .boton-logo:focus {
   border: 3px solid #8ff6d5;
@@ -151,7 +150,7 @@ body {
 .img-logo-registro {
   width: 90px;
   height: 90px;
-  border-radius: 12px;
+  border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 0 0 2px #222;
   background: none;
@@ -165,5 +164,17 @@ body {
   }
   .titulo-principal {
     font-size: 1.3em;
+  }
+  .opciones-logo {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .boton-logo {
+    width: 80px;
+    height: 80px;
+  }
+  .img-logo-registro {
+    width: 70px;
+    height: 70px;
   }
 }

@@ -35,12 +35,20 @@
         <option value="en curso">En curso</option>
         <option value="finalizado">Finalizado</option>
       </select>
+      <!-- Sección para agregar colaboradores -->
+      <label class="label-form">Colaboradores</label>
+      <div class="colaboradores-section">
+        <input type="email" class="input-colaborador" id="input-colaborador" placeholder="Correo del colaborador">
+        <button type="button" class="btn-agregar-colaborador" id="btn-agregar-colaborador">Agregar</button>
+      </div>
+      <ul class="lista-colaboradores" id="lista-colaboradores"></ul>
       <div class="botones-form">
         <button type="submit" class="btn-guardar">Guardar</button>
         <button type="button" class="btn-cancelar" onclick="window.location.href='../proyectos/proyectos.html'">Cancelar</button>
       </div>
     </form>
   </div>
+  <script src="../common/user-avatar.js"></script>
   <script src="crear-proyecto.js"></script>
 </body>
 </html>

@@ -1,18 +1,17 @@
 // Página principal - Dashboard con resumen de tareas y novedades
 document.addEventListener('DOMContentLoaded', function() {
-  // Verificar que el usuario esté logueado, si no, ir al login
   const usuario = JSON.parse(localStorage.getItem('usuario'));
+  const logoUsuario = document.getElementById('logo-usuario');
+  if (logoUsuario && usuario && usuario.avatar) {
+    logoUsuario.src = `../images/logo${usuario.avatar}.jpeg`;
+  }
+
+  // Verificar que el usuario esté logueado, si no, ir al login
   if (!usuario) {
     window.location.href = '../login/login.html';
     return;
   }
-  // Cambiar el logo de la barra superior por el del usuario logueado
-  const logoUsuario = document.getElementById('logo-usuario');
-  if (logoUsuario && usuario.logo) {
-    logoUsuario.src = `../images/${usuario.logo}`;
-  } else if (logoUsuario && usuario.avatar) {
-    logoUsuario.src = `../images/${usuario.avatar}`;
-  }
+  // El avatar del usuario se configura automáticamente con el script común user-avatar.js
 
   // Variables globales para usar en toda la página
   let proyectos = [];

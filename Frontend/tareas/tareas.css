@@ -1,3 +1,53 @@
+/* Cruz eliminar tarea color blanco por defecto */
+.btn-eliminar-tarea svg {
+  stroke: #fff !important;
+  transition: stroke 0.2s;
+}
+/* Lápiz editar tarea color blanco por defecto */
+.btn-editar-tarea svg {
+  stroke: #fff !important;
+  transition: stroke 0.2s;
+}
+/* Botones editar/eliminar tarea */
+.kanban-tarea-acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+.btn-editar-tarea, .btn-eliminar-tarea {
+  background: #181f1c;
+  border: 2px solid #8ff6d5;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  padding: 0;
+}
+.btn-editar-tarea:hover {
+  background: #8ff6d5;
+  border-color: #3ecf4a;
+}
+.btn-editar-tarea:hover svg {
+  stroke: #222 !important;
+}
+.btn-eliminar-tarea:hover {
+.btn-eliminar-tarea:hover {
+  background: #e74c3c;
+  border-color: #c0392b;
+}
+.btn-eliminar-tarea:hover svg {
+  stroke: #222 !important;
+}
+.btn-eliminar-tarea:hover svg {
+  stroke: #222 !important;
+}
+  background: #e74c3c;
+  border-color: #c0392b;
+}
 @import url('../pprincipal/principal.css');
 
 .kanban-main {
