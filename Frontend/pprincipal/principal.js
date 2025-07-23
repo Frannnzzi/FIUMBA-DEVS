@@ -130,9 +130,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const listaNovedades = document.getElementById('lista-novedades');
     listaNovedades.innerHTML = '';
 
+    console.log('Tareas cargadas para novedades:', tareas);
+    console.log('proyectos cargadas para novedades:', proyectos);
     // Obtener novedades del localStorage
     let novedades = JSON.parse(localStorage.getItem('novedades')) || [];
-    
+    /*
+    let novedades = tareas.map(t => {
+      const proyecto = proyectos.find(p => p.id_proyecto === t.id_proyecto);
+      return {
+        id_proyecto: t.id_proyecto,
+        mensaje: `Tarea "${t.titulo}" en estado: ${t.estado}`,
+        fecha: `Hasta el: ${t.fecha_final}`,
+        nombreProyecto: proyecto ? proyecto.nombre : 'Sin nombre'
+      };
+    });
+    */
     // Filtrar novedades de los proyectos del usuario (dueño o colaborador)
     let novedadesFiltradas = [];
     if (typeof novedades !== 'undefined' && Array.isArray(novedades)) {
@@ -168,8 +180,8 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       // Traer proyectos y tareas
       const [respuestaProyectos, respuestaTareas] = await Promise.all([
-        fetch('http://localhost:3000/api/proyectos/id_usuario'),
-        fetch('http://localhost:3000/api/tareas')
+        fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`),
+        fetch(`http://localhost:3000/api/tareas/usuarios/${usuario.id_usuario}`)
       ]);
 
       // Verificar si las respuestas son exitosas

@@ -273,8 +273,8 @@ document.addEventListener('DOMContentLoaded', function() {
   async function cargarDatos() {
     try {
       const [respuestaProyectos, respuestaUsuarios] = await Promise.all([
-        fetch(`http://localhost:3000/api/proyectos/usuarios/${id_usuario}`),
-        fetch(`http://localhost:3000/api/usuarios/proyectos/${proyecto.id_proyecto}`),
+        fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`),
+        fetch('http://localhost:3000/api/usuarios'),
       ]);
       if (!respuestaProyectos.ok) throw new Error(`Error al cargar proyectos: ${respuestaProyectos.status}`);
       if (!respuestaUsuarios.ok) throw new Error(`Error al cargar usuarios: ${respuestaUsuarios.status}`);
@@ -295,6 +295,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   cargarDatos();
-  configurarBusqueda();
+  //configurarBusqueda();
 
 });
