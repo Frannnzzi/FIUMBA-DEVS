@@ -82,23 +82,24 @@ curl --header "Content-Type: application/json" \
 */
 app.post('/api/usuarios', async (req, res) => {
 
-    if (!req.body.nombre || !req.body.apellido || !req.body.rol || !req.body.avatar ||
-    !req.body.mail) {
-    return res.status(400).json({error: "Missing required fields"});
-}
-
-    const usuario = await createUsuario(
-        req.body.nombre, 
-        req.body.apellido,
-        req.body.rol,
-        req.body.avatar,
-        req.body.mail
-    );
-    
-    if (!usuario) {
-        return res.status(500).json({error: 'Error al crear usuario'});
+    if (!req.body.nombre || !req.body.apellido || !req.body.rol || !req.body.avatar || !req.body.mail) {
+        return res.status(400).json({error: "Missing required fields"});
     }
-    res.json({usuario});
+    try {
+        const usuario = await createUsuario(
+            req.body.nombre, 
+            req.body.apellido,
+            req.body.rol,
+            req.body.avatar,
+            req.body.mail
+        );
+        if (!usuario) {
+            return res.status(500).json({error: 'Error al crear usuario'});
+        }
+        res.json({usuario});
+    } catch (err) {
+        res.status(500).json({error: err.message || 'Error interno al crear usuario'});
+    }
 });
 
 //delete usuario
@@ -312,12 +313,22 @@ curl --header "Content-Type: application/json" \
   http://localhost:3000/api/colaboradores
 */
 app.post('/api/colaboradores', async (req, res) => {
-    const { id_usuario, id_proyecto } = req.body;
-    if (!id_usuario || !id_proyecto) {
+    // Permitir emails o id_usuario
+    const { id_usuario, id_proyecto, email } = req.body;
+    if ((!id_usuario && !email) || !id_proyecto) {
       return res.status(400).json({ error: "Faltan datos" });
     }
-    const resultado = await agregarUsuarioAProyecto(id_usuario, id_proyecto);
-
+    let usuarioId = id_usuario;
+    if (email) {
+      // Buscar usuario por email
+      const result = await require('./usuarios').getAllusuarios();
+      const usuario = result.find(u => u.mail === email);
+      if (!usuario) {
+        return res.status(404).json({ error: "No existe usuario con ese email" });
+      }
+      usuarioId = usuario.id_usuario;
+    }
+    const resultado = await agregarUsuarioAProyecto(usuarioId, id_proyecto);
     res.json({resultado});
   });
 

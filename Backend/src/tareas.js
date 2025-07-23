@@ -22,7 +22,12 @@ async function getAlltareas() {
 }
 
 async function getAlltareasByUsuarioId(id_usuario){
-    const result = await dbclient.query('SELECT * FROM tareas WHERE id_usuario = $1', [id_usuario]);
+    const result = await dbclient.query(`
+    SELECT t.* FROM tareas t
+    JOIN proyectos p ON t.id_proyecto = p.id_proyecto
+    LEFT JOIN usuarios_proyectos up ON up.id_proyecto = p.id_proyecto 
+    WHERE p.id_usuario = $1 OR up.id_usuario = $1
+  `, [id_usuario]);  //El LEFT JOIN muestra todos los datos de la tabla izquierda y solo los que coinciden de la tabla derecha
     if (result.rowCount === 0){
         return undefined;
     }

@@ -1,7 +1,11 @@
-// Página principal - Dashboard con resumen de tareas y novedades
 document.addEventListener('DOMContentLoaded', function() {
-  // Verificar que el usuario esté logueado, si no, ir al login
   const usuario = JSON.parse(localStorage.getItem('usuario'));
+  const logoUsuario = document.getElementById('logo-usuario');
+  if (logoUsuario && usuario && usuario.avatar) {
+    logoUsuario.src = `../images/logo${usuario.avatar}.jpeg`;
+  }
+
+  // Si el usuario no esta logueado, mandarlo al login.
   if (!usuario) {
     window.location.href = '../login/login.html';
     return;
@@ -11,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let proyectos = [];
   let tareas = [];
 
-  // Función para formatear fechas en formato argentino
+  // Función para formatear fechas en formato arg
   function formatearFecha(fecha) {
     if (!fecha) return '';
     const fechaObj = new Date(fecha);
@@ -126,19 +130,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const listaNovedades = document.getElementById('lista-novedades');
     listaNovedades.innerHTML = '';
 
+    console.log('Tareas cargadas para novedades:', tareas);
+    console.log('proyectos cargadas para novedades:', proyectos);
     // Obtener novedades del localStorage
     let novedades = JSON.parse(localStorage.getItem('novedades')) || [];
-    
-    // Mostrar todas las novedades, sin filtrar
-    const novedadesFiltradas = novedades;
+    /*
+    let novedades = tareas.map(t => {
+      const proyecto = proyectos.find(p => p.id_proyecto === t.id_proyecto);
+      return {
+        id_proyecto: t.id_proyecto,
+        mensaje: `Tarea "${t.titulo}" en estado: ${t.estado}`,
+        fecha: `Hasta el: ${t.fecha_final}`,
+        nombreProyecto: proyecto ? proyecto.nombre : 'Sin nombre'
+      };
+    });
+    */
+    // Filtrar novedades de los proyectos del usuario (dueño o colaborador)
+    let novedadesFiltradas = [];
+    if (typeof novedades !== 'undefined' && Array.isArray(novedades)) {
+      novedadesFiltradas = novedades.filter(nov => proyectos.some(p => p.id_proyecto === nov.id_proyecto));
+      novedades = novedadesFiltradas;
+    }
 
-    if (novedadesFiltradas.length === 0) {
+    if (novedades.length === 0) {
       listaNovedades.appendChild(mostrarMensajeNovedadesVacio());
       return;
     }
 
     // Mostrar las novedades más recientes primero
-    novedadesFiltradas.slice().reverse().forEach(novedad => {
+    novedades.slice().reverse().forEach(novedad => {
       const tarjeta = crearTarjetaNovedad(novedad);
       listaNovedades.appendChild(tarjeta);
     });
@@ -158,10 +178,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // Cargar datos iniciales desde el backend
   async function cargarDatos() {
     try {
-      // Traer proyectos y tareas en paralelo para ser más rápido
+      // Traer proyectos y tareas
       const [respuestaProyectos, respuestaTareas] = await Promise.all([
-        fetch('http://localhost:3000/api/proyectos'),
-        fetch('http://localhost:3000/api/tareas')
+        fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`),
+        fetch(`http://localhost:3000/api/tareas/usuarios/${usuario.id_usuario}`)
       ]);
 
       // Verificar si las respuestas son exitosas
@@ -175,11 +195,30 @@ document.addEventListener('DOMContentLoaded', function() {
       const proyectosData = await respuestaProyectos.json();
       const tareasData = await respuestaTareas.json();
 
-      // Filtrar solo los proyectos del usuario logueado
-      proyectos = proyectosData.filter(p => p.id_usuario === usuario.id_usuario);
-      tareas = tareasData.filter(t => 
-        proyectos.some(p => p.id_proyecto === t.id_proyecto)
-      );
+      // Filtrar solo los proyectos del usuario logueado (dueño)
+      let proyectosUsuario = proyectosData.filter(p => p.id_usuario === usuario.id_usuario);
+
+      //agregar proyectos colaborativos
+      try {
+        const colaborativosRes = await fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`);
+        if (colaborativosRes.ok) {
+          const colaborativos = await colaborativosRes.json();
+          const ids = new Set();
+          proyectosUsuario = [...proyectosUsuario, ...colaborativos].filter(p => {
+            if (!ids.has(p.id_proyecto)) {
+              ids.add(p.id_proyecto);
+              return true;
+            }
+            return false;
+          });
+        }
+      } catch (e) {
+        console.error('Error al cargar proyectos colaborativos:', e);
+      }
+
+      proyectos = proyectosUsuario;
+      // Filtrar tareas pendientes relacionadas a los proyectos del usuario
+      tareas = tareasData.filter(t => proyectos.some(p => p.id_proyecto === t.id_proyecto) && (t.estado === 'pendiente' || t.estado === 'en curso'));
 
       // Renderizar las secciones
       renderizarTareasPendientes();
@@ -213,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarDatos();
   }
 
-  // Función global para agregar novedades (usada en otras páginas)
+  // Función global para agregar novedades
   window.agregarNovedad = function(mensaje) {
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     const nombreUsuario = usuario?.nombre || 'Usuario';

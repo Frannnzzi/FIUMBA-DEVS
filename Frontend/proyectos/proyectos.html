@@ -10,26 +10,66 @@
 <body>
   <nav class="barra-superior">
     <div class="logo-menu" onclick="window.location.href='../pprincipal/principal.html'">
-      <img src="../images/Untitled_logo_1_free-file.jpg" alt="Logo FIUMBA DEVS" style="height: 36px; width: 36px; object-fit: contain; border-radius: 8px; background: #2d3e38;" />
+      <img id="logo-usuario" alt="Logo del Usuario">
     </div>
     <div class="navbar-central">
       <a class="nav-link" href="../pprincipal/principal.html">Inicio</a>
-      <a class="nav-link seleccionado" href="#">Proyectos</a>
+      <a class="nav-link seleccionado" href="#"> Mis Proyectos</a>
       <a class="nav-link" href="../tareas/tareas.html">Tareas</a>
     </div>
   </nav>
   <main class="main-proyectos">
     <div class="contenedor-proyectos">
       <div class="buscar-proyecto-bar">
-        <input type="text" class="input-buscar-proyecto" placeholder="Buscar proyecto...">
+        <input type="text" id="busqueda-proyecto" class="input-buscar-proyecto" placeholder="Buscar proyecto...">
         <button class="btn-buscar-proyecto">Buscar</button>
       </div>
-      <div class="lista-proyectos">
-        <!-- Aquí se mostrarán los proyectos -->
-        <div class="placeholder-proyecto">No hay proyectos por ahora</div>
-      </div>
+      <div class="lista-proyectos"></div>
     </div>
   </main>
+
+  <div id="modal-colaborador" class="modal-colaborador-oculto">
+    <div class="modal-colaborador-contenido">
+      <span class="modal-cerrar" id="modal-cerrar-btn">&times;</span>
+      <h3 class="titulo-modal">Agregar Colaborador</h3>
+      <div id="colaboradores-actuales-lista">
+        <h4>Colaboradores Actuales:</h4>
+        <ul></ul>
+      </div>
+      <form id="form-colaborador" onsubmit="return false;">
+        <label for="email-colaborador">Correo del nuevo colaborador:</label>
+        <input type="email" id="email-colaborador" placeholder="ejemplo@correo.com" required>
+        <button type="submit" class="btn-modal-agregar">Agregar</button>
+        <div id="mensaje-modal-colaborador"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para editar proyecto -->
+  <div id="modal-editar-proyecto" class="modal-editar-proyecto-oculto">
+    <div class="modal-editar-proyecto-contenido">
+      <span class="modal-cerrar" id="modal-editar-cerrar-btn">&times;</span>
+      <h3 class="titulo-modal">Editar Proyecto</h3>
+      <form id="form-editar-proyecto">
+        <label for="editar-nombre">Nombre:</label>
+        <input type="text" id="editar-nombre" class="input-form-proyecto" required>
+        <label for="editar-descripcion">Descripción:</label>
+        <textarea id="editar-descripcion" class="input-form-proyecto" rows="3"></textarea>
+        <label for="editar-fecha-inicio">Fecha de inicio:</label>
+        <input type="date" id="editar-fecha-inicio" class="input-form-proyecto">
+        <label for="editar-fecha-final">Fecha de finalización:</label>
+        <input type="date" id="editar-fecha-final" class="input-form-proyecto">
+        <label for="editar-estado">Estado:</label>
+        <select id="editar-estado" class="input-form-proyecto">
+          <option value="pendiente">Pendiente</option>
+          <option value="en curso">En curso</option>
+          <option value="finalizada">Finalizada</option>
+        </select>
+        <button type="submit" class="btn-modal-editar">Guardar cambios</button>
+        <div id="mensaje-modal-editar"></div>
+      </form>
+    </div>
+  </div>
   <script src="proyectos.js"></script>
 </body>
-</html> 
+</html>

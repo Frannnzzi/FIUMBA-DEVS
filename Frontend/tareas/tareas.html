@@ -10,11 +10,11 @@
 <body>
   <nav class="barra-superior">
     <div class="logo-menu" onclick="window.location.href='../pprincipal/principal.html'">
-      <img src="../images/Untitled_logo_1_free-file.jpg" alt="Logo FIUMBA DEVS" style="height: 36px; width: 36px; object-fit: contain; border-radius: 8px; background: #2d3e38;" />
+      <img id="logo-usuario" alt="Logo del Usuario">
     </div>
     <div class="navbar-central">
       <a class="nav-link" href="../pprincipal/principal.html">Inicio</a>
-      <a class="nav-link" href="../proyectos/proyectos.html">Proyectos</a>
+      <a class="nav-link" href="../proyectos/proyectos.html">Mis Proyectos</a>
       <a class="nav-link seleccionado" href="#">Tareas</a>
     </div>
   </nav>
@@ -27,7 +27,7 @@
     </div>
     <div class="kanban-board">
       <div class="kanban-col" id="col-sin-asignar">
-        <h2 class="kanban-titulo">Sin asignar</h2>
+        <h2 class="kanban-titulo">Pendiente</h2>
         <div class="kanban-lista" id="lista-sin-asignar"></div>
       </div>
       <div class="kanban-col" id="col-en-curso">
@@ -35,11 +35,35 @@
         <div class="kanban-lista" id="lista-en-curso"></div>
       </div>
       <div class="kanban-col" id="col-terminado">
-        <h2 class="kanban-titulo">Terminado</h2>
+        <h2 class="kanban-titulo">Finalizada</h2>
         <div class="kanban-lista" id="lista-terminado"></div>
       </div>
     </div>
   </main>
   <script src="tareas.js"></script>
+
+  <!-- Modal para editar tarea -->
+  <div id="modal-editar-tarea" class="modal-editar-tarea-oculto">
+    <div class="modal-editar-tarea-contenido">
+      <span class="modal-cerrar" id="modal-editar-tarea-cerrar-btn">&times;</span>
+      <h3 class="titulo-modal">Editar Tarea</h3>
+      <form id="form-editar-tarea">
+        <label for="editar-titulo">Título:</label>
+        <input type="text" id="editar-titulo" class="input-form-tarea" required>
+        <label for="editar-descripcion">Descripción:</label>
+        <textarea id="editar-descripcion" class="input-form-tarea" rows="3"></textarea>
+        <label for="editar-prioridad">Prioridad:</label>
+        <select id="editar-prioridad" class="input-form-tarea">
+          <option value="alta">Alta</option>
+          <option value="media">Media</option>
+          <option value="baja">Baja</option>
+        </select>
+        <label for="editar-fecha-final">Vencimiento:</label>
+        <input type="date" id="editar-fecha-final" class="input-form-tarea">
+        <button type="submit" class="btn-modal-editar">Guardar cambios</button>
+        <div id="mensaje-modal-editar-tarea"></div>
+      </form>
+    </div>
+  </div>
 </body>
-</html> 
+</html>

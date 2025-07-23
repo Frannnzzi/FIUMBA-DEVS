@@ -110,3 +110,71 @@ input[type="date"].input-form-proyecto {
   color: #fff;
   border: 2px solid #c0392b;
 } 
+
+.colaboradores-section {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.input-colaborador {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #8ff6d5;
+  background: #181f1c;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.btn-agregar-colaborador {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #8ff6d5;
+  color: #222;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-agregar-colaborador:hover {
+  background: #6be3c1;
+}
+
+.lista-colaboradores {
+  list-style: none;
+  padding: 0 0 0 0;
+  margin: 0 0 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lista-colaboradores li {
+  background: #181f1c;
+  color: #8ff6d5;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 1rem;
+  border: 1.5px solid #8ff6d5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-eliminar-colaborador {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 1.1em;
+  margin-left: auto;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-eliminar-colaborador:hover {
+  background: #e74c3c;
+  color: #fff;
+} 

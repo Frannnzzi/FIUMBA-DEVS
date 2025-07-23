@@ -76,9 +76,9 @@ async function getOneusuario(id_usuario){
 
     const usuario = {
         id_usuario: result.rows[0].id_usuario,
-        nombre: result.rows[0].nombre,
+        nombre: result.rows[0].nombre_usuario,
         apellido: result.rows[0].apellido,
-        rol: result.rows[0].apellido,
+        rol: result.rows[0].rol,
         avatar: result.rows[0].avatar,
         mail: result.rows[0].mail,
         proyectos: []
@@ -109,12 +109,16 @@ async function usuariosDeProyecto(id_proyecto){
 }
 
 async function createUsuario(nombre, apellido, rol, avatar, mail){
-    const result = await dbclient.query('INSERT INTO usuarios (nombre, apellido, rol, avatar, mail) VALUES($1, $2, $3, $4, $5)',
-         [nombre, apellido, rol, avatar, mail]);
-
-    console.log("result", result);
-    console.log("result", result.rowCount);
-    return result.rowCount;
+    try {
+        const result = await dbclient.query(
+            'INSERT INTO usuarios (nombre, apellido, rol, avatar, mail) VALUES($1, $2, $3, $4, $5) RETURNING *',
+            [nombre, apellido, rol, avatar, mail]
+        );
+        return result.rows[0];
+    } catch (err) {
+        console.error('Error al crear usuario:', err);
+        throw err;
+    }
 }
 
 async function deleteUsuario(id_usuario) {
