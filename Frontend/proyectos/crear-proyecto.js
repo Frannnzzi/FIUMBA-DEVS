@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('La fecha final no puede ser menor a la fecha de inicio.');
         return;
       }
+      
       // Enviar colaboradores uno por uno, verificando existencia
       const proyectoCreado = await crearProyecto(datos, usuario.id_usuario);
       let erroresColaboradores = [];

@@ -5,11 +5,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (estadoKanban === 'terminado') return 'finalizada';
     return 'pendiente';
   }
+
   // Obtener id_proyecto de la URL si existe
   function getIdProyectoFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.has('id_proyecto') ? params.get('id_proyecto') : null;
   }
+
   // Inicializar usuario y mapaAvatares antes de cualquier uso
   const usuario = JSON.parse(localStorage.getItem('usuario'));
   if (!usuario) {
@@ -22,44 +24,34 @@ document.addEventListener('DOMContentLoaded', function() {
     3: '../images/logo3.jpeg',
     4: '../images/logo4.jpeg'
   };
+
   // Mostrar el logo del usuario correctamente
   const logoUsuario = document.getElementById('logo-usuario');
   if (logoUsuario && usuario.avatar && mapaAvatares[usuario.avatar]) {
     logoUsuario.src = mapaAvatares[usuario.avatar];
     logoUsuario.style.display = '';
   }
+
   // Formatea la fecha en formato local
   function formatearFecha(fecha) {
     if (!fecha) return '';
     const fechaObj = new Date(fecha);
     return fechaObj.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   }
+
   // Mapea el estado del backend al estado del Kanban
   function mapearEstadoKanban(estado) {
     if (estado === 'en curso') return 'en-curso';
     if (estado === 'finalizada' || estado === 'terminado') return 'terminado';
     return 'sin-asignar'; // pendiente
   }
+
   // Variables globales para todo el script
   let proyectos = [];
   let tareas = [];
   const selectProyecto = document.querySelector('.kanban-proyecto-select');
   async function editarTarea(tarea) {
-    const nuevoTitulo = prompt('Editar título de la tarea:', tarea.titulo);
-    if (nuevoTitulo === null) return;
-    const nuevaDescripcion = prompt('Editar descripción:', tarea.descripcion);
-    if (nuevaDescripcion === null) return;
-    try {
-      const res = await fetch(`http://localhost:3000/api/tareas/${tarea.id_tarea}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ titulo: nuevoTitulo, descripcion: nuevaDescripcion })
-      });
-      if (!res.ok) throw new Error('Error al editar la tarea');
-      location.reload();
-    } catch (error) {
-      alert('No se pudo editar la tarea: ' + error.message);
-    }
+    abrirModalEditarTarea(tarea);
   }
 
   async function eliminarTarea(tarea) {
@@ -74,8 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
       alert('No se pudo eliminar la tarea: ' + error.message);
     }
   }
-  // Obtener id_proyecto de la URL si existe
-  // ...existing code...
 
   function poblarSelectProyectos() {
     const idProyectoUrl = getIdProyectoFromUrl();
@@ -99,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
       opt.textContent = proyecto.nombre;
       selectProyecto.appendChild(opt);
     });
+
     // Seleccionar el proyecto si viene en la URL, localStorage o mantener el actual
     if (idProyectoUrl) {
       selectProyecto.value = idProyectoUrl;
@@ -134,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </button>
       </div>
     `;
+
     // Acciones editar/eliminar
     card.querySelector('.btn-editar-tarea').addEventListener('click', function(e) {
       e.stopPropagation();
@@ -172,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
               body: JSON.stringify({ estado: nuevoEstado })
             });
             if (respuesta.ok) {
+
               // Mantener el proyecto seleccionado al recargar
               const idProyectoActual = selectProyecto.value;
               window.location.href = `tareas.html?id_proyecto=${idProyectoActual}`;
@@ -223,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Filtrar proyectos donde el usuario es dueño
       let proyectosFiltrados = proyectosData.filter(p => p.id_usuario === usuario.id_usuario);
-      // Intentar agregar proyectos colaborativos si la API responde correctamente
+      // agregar proyectos colaborativos
       try {
         const proyectosUsuario = await fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`);
         if (proyectosUsuario.ok) {
@@ -239,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
           });
         }
       } catch (e) {
-        // Si la API colaborativa falla, solo mostrar los propios
+        console.error('Error al cargar proyectos colaborativos:', e);
       }
       proyectos = proyectosFiltrados;
       tareas = tareasData.filter(t => proyectos.some(p => p.id_proyecto === t.id_proyecto));
@@ -255,5 +248,58 @@ document.addEventListener('DOMContentLoaded', function() {
   selectProyecto.addEventListener('change', renderizarKanban);
   configurarDragDrop();
   cargarDatos();
-// Fin del bloque principal
+  
+  // Fin del bloque principal
+
+  // Modal editar tarea
+  const modalEditarTarea = document.getElementById('modal-editar-tarea');
+  const formEditarTarea = document.getElementById('form-editar-tarea');
+  const btnCerrarModalEditarTarea = document.getElementById('modal-editar-tarea-cerrar-btn');
+  const mensajeModalEditarTarea = document.getElementById('mensaje-modal-editar-tarea');
+  let tareaEditando = null;
+
+  function abrirModalEditarTarea(tarea) {
+    tareaEditando = tarea;
+    document.getElementById('editar-titulo').value = tarea.titulo || '';
+    document.getElementById('editar-descripcion').value = tarea.descripcion || '';
+    document.getElementById('editar-prioridad').value = tarea.prioridad || 'media';
+    document.getElementById('editar-fecha-final').value = tarea.fecha_final ? tarea.fecha_final.split('T')[0] : '';
+    mensajeModalEditarTarea.textContent = '';
+    modalEditarTarea.classList.remove('modal-editar-tarea-oculto');
+    modalEditarTarea.style.display = 'flex';
+  }
+
+  btnCerrarModalEditarTarea.addEventListener('click', () => {
+    modalEditarTarea.classList.add('modal-editar-tarea-oculto');
+    modalEditarTarea.style.display = 'none';
+    tareaEditando = null;
+  });
+
+  formEditarTarea.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!tareaEditando) return;
+    const datos = {
+      titulo: document.getElementById('editar-titulo').value,
+      descripcion: document.getElementById('editar-descripcion').value,
+      prioridad: document.getElementById('editar-prioridad').value,
+      fecha_final: document.getElementById('editar-fecha-final').value
+    };
+    try {
+      const res = await fetch(`http://localhost:3000/api/tareas/${tareaEditando.id_tarea}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
+      if (!res.ok) throw new Error('No se pudo editar la tarea');
+      mensajeModalEditarTarea.textContent = 'Tarea editada correctamente.';
+      setTimeout(() => {
+        modalEditarTarea.classList.add('modal-editar-tarea-oculto');
+        modalEditarTarea.style.display = 'none';
+        tareaEditando = null;
+        location.reload();
+      }, 800);
+    } catch (err) {
+      mensajeModalEditarTarea.textContent = 'Error al editar la tarea.';
+    }
+  });
 });

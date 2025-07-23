@@ -113,12 +113,12 @@ body {
   box-shadow: 0 8px 32px rgba(0,0,0,0.25);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 128px); /* Ocupa todo el alto menos navbar y padding */
+  height: calc(100vh - 128px);
   box-sizing: border-box;
   overflow: hidden;
 }
 
-/* Columna derecha: acciones y novedades */
+/* Columna derecha: novedades */
 .columna-derecha {
   flex: 1 1 0;
   display: flex;
@@ -195,12 +195,11 @@ body {
   min-width: 260px;
   margin-bottom: 0;
   flex: 1 1 320px;
-  /* Limitar a 2 líneas de texto */
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-height: 3.2em; /* Aproximadamente 2 líneas */
+  max-height: 3.2em;
 }
 
 /* Tareas */
@@ -209,7 +208,6 @@ body {
   flex-direction: column;
   gap: 18px;
   overflow-y: auto;
-  /* Ocupa todo el espacio disponible dentro del bloque */
   flex: 1 1 auto;
   padding-bottom: 8px;
 }
@@ -220,7 +218,6 @@ body {
   padding: 12px 16px;
   color: #ffffff;
   margin-bottom: 0;
-  /* Fijar altura mínima y máxima para que no se estiren */
   min-height: 60px;
   max-height: 80px;
   display: flex;

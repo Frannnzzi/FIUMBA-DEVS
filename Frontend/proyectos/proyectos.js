@@ -27,15 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
   let proyectoSeleccionadoId = null;
   let todosLosUsuarios = [];
   let proyectos = [];
+
   // Modal editar proyecto
-  const modalEditar = document.getElementById('modal-editar-proyecto');
+  const modalEditarProyecto = document.getElementById('modal-editar-proyecto');
   const formEditarProyecto = document.getElementById('form-editar-proyecto');
-  const inputEditarNombre = document.getElementById('editar-nombre');
-  const inputEditarDescripcion = document.getElementById('editar-descripcion');
-  const inputEditarFechaInicio = document.getElementById('editar-fecha-inicio');
-  const inputEditarFechaFinal = document.getElementById('editar-fecha-final');
-  const selectEditarEstado = document.getElementById('editar-estado');
-  const btnCerrarModalEditar = document.getElementById('modal-editar-cerrar-btn');
+  const btnCerrarModalEditarProyecto = document.getElementById('modal-editar-cerrar-btn');
   const mensajeModalEditar = document.getElementById('mensaje-modal-editar');
   let proyectoEditando = null;
   let tareas = [];
@@ -65,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
     tarjeta.className = 'tarjeta-proyecto';
     tarjeta.innerHTML = `
       <button class="btn-agregar-colaborador" title="Agregar colaborador">
-        <svg fill="#000000" height="20px" width="20px" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        <img src="../images/agregarPersona.png" alt="Agregar colaborador" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;" />
       </button>
       <div class="info-proyecto">
         <div class="nombre-proyecto">${proyecto.nombre}</div>
@@ -108,6 +104,25 @@ document.addEventListener('DOMContentLoaded', function() {
         colaboradores.forEach(c => {
           const li = document.createElement('li');
           li.textContent = `${c.nombre} ${c.apellido} (${c.mail})`;
+          // Botón eliminar colaborador
+          const btnEliminarColaborador = document.createElement('button');
+          btnEliminarColaborador.textContent = 'Eliminar';
+          btnEliminarColaborador.className = 'btn-eliminar-colaborador';
+          btnEliminarColaborador.onclick = async () => {
+            if (confirm(`¿Eliminar a ${c.nombre} ${c.apellido} de este proyecto?`)) {
+              try {
+                const res = await fetch(`http://localhost:3000/api/colaboradores/${c.id_usuario}/${id_proyecto}`, {
+                  method: 'DELETE'
+                });
+                if (!res.ok) throw new Error('No se pudo eliminar el colaborador');
+                li.remove();
+                mensajeModal.textContent = 'Colaborador eliminado correctamente.';
+              } catch (err) {
+                mensajeModal.textContent = 'Error al eliminar colaborador.';
+              }
+            }
+          };
+          li.appendChild(btnEliminarColaborador);
           listaColaboradoresActuales.appendChild(li);
         });
       } else {
@@ -172,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const tarjeta = crearTarjetaProyecto(proyecto);
       lista.appendChild(tarjeta);
     });
+    
   // Filtrado en tiempo real
   if (inputBuscarProyecto) {
     inputBuscarProyecto.addEventListener('input', function() {
@@ -189,63 +205,58 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   }
 
-  async function editarProyecto(proyecto) {
-    // Mostrar modal y cargar datos
+  function abrirModalEditarProyecto(proyecto) {
     proyectoEditando = proyecto;
-    inputEditarNombre.value = proyecto.nombre;
-    inputEditarDescripcion.value = proyecto.descripcion;
-    inputEditarFechaInicio.value = proyecto.fecha_inicio ? proyecto.fecha_inicio.slice(0,10) : '';
-    inputEditarFechaFinal.value = proyecto.fecha_final ? proyecto.fecha_final.slice(0,10) : '';
-    selectEditarEstado.value = proyecto.estado || 'pendiente';
+    document.getElementById('editar-nombre').value = proyecto.nombre || '';
+    document.getElementById('editar-descripcion').value = proyecto.descripcion || '';
+    document.getElementById('editar-fecha-inicio').value = proyecto.fecha_inicio ? proyecto.fecha_inicio.split('T')[0] : '';
+    document.getElementById('editar-fecha-final').value = proyecto.fecha_final ? proyecto.fecha_final.split('T')[0] : '';
+    document.getElementById('editar-estado').value = proyecto.estado || 'pendiente';
     mensajeModalEditar.textContent = '';
-    modalEditar.classList.remove('modal-editar-proyecto-oculto');
-    modalEditar.style.display = 'flex';
+    modalEditarProyecto.classList.remove('modal-editar-proyecto-oculto');
+    modalEditarProyecto.style.display = 'flex';
   }
-  function cerrarModalEditar() {
-    modalEditar.classList.add('modal-editar-proyecto-oculto');
-    modalEditar.style.display = 'none';
+
+  btnCerrarModalEditarProyecto.addEventListener('click', () => {
+    modalEditarProyecto.classList.add('modal-editar-proyecto-oculto');
+    modalEditarProyecto.style.display = 'none';
     proyectoEditando = null;
+  });
+
+  formEditarProyecto.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!proyectoEditando) return;
+    const datos = {
+      nombre: document.getElementById('editar-nombre').value,
+      descripcion: document.getElementById('editar-descripcion').value,
+      fecha_inicio: document.getElementById('editar-fecha-inicio').value,
+      fecha_final: document.getElementById('editar-fecha-final').value,
+      estado: document.getElementById('editar-estado').value
+    };
+    try {
+      const res = await fetch(`http://localhost:3000/api/proyectos/${proyectoEditando.id_proyecto}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
+      if (!res.ok) throw new Error('No se pudo editar el proyecto');
+      mensajeModalEditar.textContent = 'Proyecto editado correctamente.';
+      setTimeout(() => {
+        modalEditarProyecto.classList.add('modal-editar-proyecto-oculto');
+        modalEditarProyecto.style.display = 'none';
+        proyectoEditando = null;
+        location.reload();
+      }, 800);
+    } catch (err) {
+      mensajeModalEditar.textContent = 'Error al editar el proyecto.';
+    }
+  });
+
+  // Reemplazar la función de editar por el modal
+  function editarProyecto(proyecto) {
+    abrirModalEditarProyecto(proyecto);
   }
-  if (btnCerrarModalEditar) {
-    btnCerrarModalEditar.addEventListener('click', cerrarModalEditar);
-  }
-  if (formEditarProyecto) {
-    formEditarProyecto.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      if (!proyectoEditando) return;
-      const nuevoNombre = inputEditarNombre.value.trim();
-      const nuevaDescripcion = inputEditarDescripcion.value.trim();
-      const nuevaFechaInicio = inputEditarFechaInicio.value;
-      const nuevaFechaFinal = inputEditarFechaFinal.value;
-      const nuevoEstado = selectEditarEstado.value;
-      if (!nuevoNombre || !nuevaDescripcion || !nuevaFechaInicio || !nuevaFechaFinal || !nuevoEstado) {
-        mensajeModalEditar.textContent = 'Completa todos los campos.';
-        return;
-      }
-      if (nuevaFechaFinal < nuevaFechaInicio) {
-        mensajeModalEditar.textContent = 'La fecha final no puede ser menor a la fecha de inicio.';
-        return;
-      }
-      try {
-        const res = await fetch(`http://localhost:3000/api/proyectos/${proyectoEditando.id_proyecto}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            nombre: nuevoNombre,
-            descripcion: nuevaDescripcion,
-            fecha_inicio: nuevaFechaInicio,
-            fecha_final: nuevaFechaFinal,
-            estado: nuevoEstado
-          })
-        });
-        if (!res.ok) throw new Error('Error al editar el proyecto');
-        cerrarModalEditar();
-        await cargarDatos();
-      } catch (error) {
-        mensajeModalEditar.textContent = 'No se pudo editar: ' + error.message;
-      }
-    });
-  }
+
   async function eliminarProyecto(proyecto) {
     if (!confirm('¿Seguro que quieres eliminar este proyecto?')) return;
     try {

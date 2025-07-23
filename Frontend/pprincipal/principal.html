@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="principal.css">
 </head>
 <body>
-  <!-- Barra superior -->
+  <!-- Navbar -->
   <nav class="barra-superior">
     <div class="logo-menu" onclick="window.location.href='principal.html'">
       <img id="logo-usuario" src="" alt="Avatar Usuario" style="height: 56px; width: 56px; object-fit: cover; border-radius: 50%; background: #2d3e38;" />
@@ -28,15 +28,16 @@
 
   <main class="main-dashboard">
     <div class="contenedor-principal">
+      
       <!-- Columna izquierda: tareas -->
       <section class="bloque bloque-tareas">
         <h2 class="titulo-bloque">Tareas pendientes</h2>
         <div class="lista-tareas" id="lista-tareas">
           <div class="placeholder-tarea" id="placeholder-tarea">No hay tareas pendientes.</div>
-          <!-- Aquí se mostrarán las tareas pendientes dinámicamente -->
         </div>
       </section>
-      <!-- Columna derecha: acciones y novedades -->
+      
+      <!-- Columna derecha: novedades -->
       <div class="columna-derecha">
         <div class="fila-botones">
           <button class="boton-principal-dashboard" onclick="window.location.href='../proyectos/crear-proyecto.html'">Crear Proyecto</button>
@@ -46,7 +47,6 @@
           <h2 class="titulo-bloque">Novedades</h2>
           <div class="lista-novedades" id="lista-novedades">
             <div class="placeholder-novedad" id="placeholder-novedad">No hay novedades.</div>
-            <!-- Aquí se mostrarán las novedades dinámicamente -->
           </div>
         </section>
       </div>

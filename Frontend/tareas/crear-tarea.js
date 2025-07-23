@@ -25,8 +25,23 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       const respuesta = await fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`);
       const proyectos = await respuesta.json();
-      const proyectosUsuario = proyectos.filter(p => p.id_usuario === usuario.id_usuario);
       
+      // Unir proyectos donde es dueño y colaborador
+      let proyectosUsuario = proyectos.filter(p => p.id_usuario === usuario.id_usuario);
+      try {
+        const colaborativosRes = await fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`);
+        if (colaborativosRes.ok) {
+          const colaborativos = await colaborativosRes.json();
+          const ids = new Set();
+          proyectosUsuario = [...proyectosUsuario, ...colaborativos].filter(p => {
+            if (!ids.has(p.id_proyecto)) {
+              ids.add(p.id_proyecto);
+              return true;
+            }
+            return false;
+          });
+        }
+      } catch (e) {}
       selectProyecto.innerHTML = '<option value="">Seleccione un proyecto</option>';
       proyectosUsuario.forEach(proyecto => {
         const option = document.createElement('option');

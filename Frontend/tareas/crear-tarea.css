@@ -9,10 +9,6 @@ body {
   justify-content: flex-start;
 }
 
-.barra-superior {
-  /* Hereda de principal.css */
-}
-
 .modal-crear-tarea {
   width: 60vw;
   max-width: 600px;
