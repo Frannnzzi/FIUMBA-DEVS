@@ -1,5 +1,3 @@
-const API_URL = 'https://fiumba-devs-backend.onrender.com/api';
-
 document.getElementById('formulario-login').addEventListener('submit', async function(e) {
   e.preventDefault();
 
