@@ -33,7 +33,7 @@ se puede encontrar la estructura de la base de datos en el archivo:
 ```
 #### 🔙 3. Levantar el backend
 ```
-make run-backend
+make start-backend
 ```
 #### 💾 4. Levantar únicamente la base de datos
 ```
@@ -45,5 +45,5 @@ make start-frontend
 ```
 #### 🚀 6. Levantar todo el proyecto (backend + frontend + base de datos)
 ```
-make run-all
+make run-project
 ```
