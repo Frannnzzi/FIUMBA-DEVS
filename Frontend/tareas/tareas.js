@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
   selectProyecto.addEventListener('change', renderizarKanban);
   configurarDragDrop();
   cargarDatos();
-  
+
   // Fin del bloque principal
 
   // Modal editar tarea
