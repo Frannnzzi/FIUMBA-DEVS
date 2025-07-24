@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const tarjeta = crearTarjetaProyecto(proyecto);
       lista.appendChild(tarjeta);
     });
-    
+
   // Filtrado en tiempo real
   if (inputBuscarProyecto) {
     inputBuscarProyecto.addEventListener('input', function() {
@@ -238,8 +238,10 @@ document.addEventListener('DOMContentLoaded', function() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datos)
+
       });
       if (!res.ok) throw new Error('No se pudo editar el proyecto');
+      agregarNovedad(`Modificaste el proyecto ${proyectoEditando.nombre}`);
       mensajeModalEditar.textContent = 'Proyecto editado correctamente.';
       setTimeout(() => {
         modalEditarProyecto.classList.add('modal-editar-proyecto-oculto');

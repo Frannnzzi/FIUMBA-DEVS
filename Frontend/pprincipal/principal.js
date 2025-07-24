@@ -125,44 +125,40 @@ document.addEventListener('DOMContentLoaded', function() {
     return placeholder;
   }
 
-  // Renderizar la lista de novedades
+// Función para agregar una novedad al localStorage
+function agregarNovedad(mensaje) {
+  const novedades = JSON.parse(localStorage.getItem('novedades')) || [];
+  const nuevaNovedad = {
+    usuario: usuario.nombre,
+    mensaje: mensaje,
+    fecha: formatearFecha(new Date())
+  };
+
+  novedades.push(nuevaNovedad); // 👈 esto iba afuera por error
+  localStorage.setItem('novedades', JSON.stringify(novedades));
+}
+
+
+  // Novedades
   function renderizarNovedades() {
-    const listaNovedades = document.getElementById('lista-novedades');
-    listaNovedades.innerHTML = '';
+  const listaNovedades = document.getElementById('lista-novedades');
+  listaNovedades.innerHTML = '';
 
-    console.log('Tareas cargadas para novedades:', tareas);
-    console.log('proyectos cargadas para novedades:', proyectos);
-    // Obtener novedades del localStorage
-    let novedades = JSON.parse(localStorage.getItem('novedades')) || [];
-    /*
-    let novedades = tareas.map(t => {
-      const proyecto = proyectos.find(p => p.id_proyecto === t.id_proyecto);
-      return {
-        id_proyecto: t.id_proyecto,
-        mensaje: `Tarea "${t.titulo}" en estado: ${t.estado}`,
-        fecha: `Hasta el: ${t.fecha_final}`,
-        nombreProyecto: proyecto ? proyecto.nombre : 'Sin nombre'
-      };
-    });
-    */
-    // Filtrar novedades de los proyectos del usuario (dueño o colaborador)
-    let novedadesFiltradas = [];
-    if (typeof novedades !== 'undefined' && Array.isArray(novedades)) {
-      novedadesFiltradas = novedades.filter(nov => proyectos.some(p => p.id_proyecto === nov.id_proyecto));
-      novedades = novedadesFiltradas;
-    }
+  let novedades = JSON.parse(localStorage.getItem('novedades')) || [];
 
-    if (novedades.length === 0) {
-      listaNovedades.appendChild(mostrarMensajeNovedadesVacio());
-      return;
-    }
+  // Filtrar solo las novedades hechas por el usuario logueado
+  novedades = novedades.filter(nov => nov.usuario === usuario.nombre);
 
-    // Mostrar las novedades más recientes primero
-    novedades.slice().reverse().forEach(novedad => {
-      const tarjeta = crearTarjetaNovedad(novedad);
-      listaNovedades.appendChild(tarjeta);
-    });
+  if (novedades.length === 0) {
+    listaNovedades.appendChild(mostrarMensajeNovedadesVacio());
+    return;
   }
+
+  novedades.slice().reverse().forEach(novedad => {
+    const tarjeta = crearTarjetaNovedad(novedad);
+    listaNovedades.appendChild(tarjeta);
+  });
+}
 
   // Configurar el botón de logout
   function configurarLogout() {
@@ -236,6 +232,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  window.agregarNovedad = agregarNovedad;
+  
   // Inicializar la página
   function inicializar() {
     // Configurar fecha y saludo
@@ -252,24 +250,6 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarDatos();
   }
 
-  // Función global para agregar novedades
-  window.agregarNovedad = function(mensaje) {
-    const usuario = JSON.parse(localStorage.getItem('usuario'));
-    const nombreUsuario = usuario?.nombre || 'Usuario';
-    let novedades = JSON.parse(localStorage.getItem('novedades')) || [];
-    const fecha = new Date().toLocaleString('es-AR');
-    
-    novedades.push({ 
-      usuario: nombreUsuario, 
-      mensaje, 
-      fecha 
-    });
-    
-    localStorage.setItem('novedades', JSON.stringify(novedades));
-    console.log('Novedad guardada:', mensaje, novedades);
-  };
-  console.log('Función agregarNovedad cargada');
-
   // Iniciar la aplicación
-  inicializar() 
-})
+  inicializar();
+});
