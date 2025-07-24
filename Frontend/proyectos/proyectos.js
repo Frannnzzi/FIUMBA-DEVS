@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     tarjeta.className = 'tarjeta-proyecto';
     tarjeta.innerHTML = `
       <button class="btn-agregar-colaborador" title="Agregar colaborador">
-        <svg fill="#000000" height="20px" width="20px" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      <img src="../images/agregar-colaborador.png" alt="Agregar Colaborador">
       </button>
       <div class="info-proyecto">
         <div class="nombre-proyecto">${proyecto.nombre}</div>
@@ -83,30 +83,71 @@ document.addEventListener('DOMContentLoaded', function() {
     return tarjeta;
   }
   
-  async function abrirModalColaboradores(id_proyecto) {
-    proyectoSeleccionadoId = id_proyecto;
-    mensajeModal.textContent = '';
-    inputEmailColaborador.value = '';
+ // EN PROYECTOS.JS:
+
+async function abrirModalColaboradores(id_proyecto) {
+  proyectoSeleccionadoId = id_proyecto;
+  mensajeModal.textContent = '';
+  inputEmailColaborador.value = '';
+  
+  try {
+    const res = await fetch(`${API_URL}/usuarios/proyectos/${id_proyecto}`);
+    if (!res.ok) throw new Error('No se pudieron cargar los colaboradores.');
+    const colaboradores = await res.json();
+    listaColaboradoresActuales.innerHTML = ''; // Limpiar lista
     
-    try {
-      const res = await fetch(`${API_URL}/usuarios/proyectos/${id_proyecto}`);
-      if (!res.ok) throw new Error('No se pudieron cargar los colaboradores.');
-      const colaboradores = await res.json();
-      listaColaboradoresActuales.innerHTML = '';
-      if (colaboradores.length > 0) {
-        colaboradores.forEach(c => {
-          const li = document.createElement('li');
-          li.textContent = `${c.nombre} ${c.apellido} (${c.mail})`;
-          listaColaboradoresActuales.appendChild(li);
+    if (colaboradores.length > 0) {
+      colaboradores.forEach(colaborador => {
+        const li = document.createElement('li');
+        
+        // Creamos un span para el texto
+        const span = document.createElement('span');
+        span.textContent = `${colaborador.nombre} ${colaborador.apellido} (${colaborador.mail})`;
+        
+        // Creamos el botón de eliminar
+        const btnEliminar = document.createElement('button');
+        btnEliminar.className = 'btn-eliminar-colaborador';
+        btnEliminar.textContent = '×'; // Usamos un caracter 'x' simple
+        btnEliminar.title = 'Eliminar colaborador';
+        
+        btnEliminar.addEventListener('click', () => {
+          eliminarColaborador(proyectoSeleccionadoId, colaborador.id_usuario);
         });
-      } else {
-        listaColaboradoresActuales.innerHTML = '<li>No hay colaboradores aún.</li>';
-      }
-    } catch (error) {
-      listaColaboradoresActuales.innerHTML = `<li>${error.message}</li>`;
+
+        li.appendChild(span);
+        li.appendChild(btnEliminar);
+        listaColaboradoresActuales.appendChild(li);
+      });
+    } else {
+      listaColaboradoresActuales.innerHTML = '<li>No hay colaboradores aún.</li>';
     }
-    modal.classList.remove('modal-colaborador-oculto');
+  } catch (error) {
+    listaColaboradoresActuales.innerHTML = `<li>${error.message}</li>`;
   }
+  modal.classList.remove('modal-colaborador-oculto');
+}
+
+async function eliminarColaborador(id_proyecto, id_usuario) {
+  if (!confirm('¿Estás seguro de que deseas eliminar a este colaborador del proyecto?')) {
+    return;
+  }
+  
+  try {
+    const respuesta = await fetch(`${API_URL}/colaboradores/${id_usuario}/${id_proyecto}`, {
+      method: 'DELETE'
+    });
+
+    if (!respuesta.ok) {
+      throw new Error('Error al eliminar el colaborador.');
+    }
+
+    // Si se elimina con éxito, recargamos la lista del modal
+    abrirModalColaboradores(id_proyecto);
+
+  } catch (error) {
+    mensajeModal.textContent = error.message;
+  }
+}
 
   function cerrarModal() {
     modal.classList.add('modal-colaborador-oculto');
@@ -161,28 +202,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // LÓGICA COMPLETA RESTAURADA Y ACTUALIZADA
   async function editarProyecto(proyecto) {
     const nuevoNombre = prompt('Editar nombre del proyecto:', proyecto.nombre);
     if (nuevoNombre === null) return;
-
+  
     const nuevaDescripcion = prompt('Editar descripción del proyecto:', proyecto.descripcion);
     if (nuevaDescripcion === null) return;
-
+  
     const nuevaFechaInicio = prompt('Editar fecha de inicio (YYYY-MM-DD):', proyecto.fecha_inicio.split('T')[0]);
     if (nuevaFechaInicio === null) return;
-
+  
     const nuevaFechaFinal = prompt('Editar fecha final (YYYY-MM-DD):', proyecto.fecha_final.split('T')[0]);
     if (nuevaFechaFinal === null) return;
-
+  
     const nuevoEstado = prompt('Editar estado:', proyecto.estado);
     if (nuevoEstado === null) return;
-
+  
     if (nuevaFechaFinal < nuevaFechaInicio) {
       alert('La fecha final no puede ser menor a la fecha de inicio.');
       return;
     }
-
+  
     try {
       const respuesta = await fetch(`${API_URL}/proyectos/${proyecto.id_proyecto}`, {
         method: 'PATCH',
@@ -195,8 +235,10 @@ document.addEventListener('DOMContentLoaded', function() {
           estado: nuevoEstado
         })
       });
-
+  
       if (respuesta.ok) {
+        // --- LÍNEA AÑADIDA ---
+        agregarNovedad(`editó el proyecto "${nuevoNombre}"`);
         location.reload();
       } else {
         alert('Error al actualizar el proyecto');
@@ -206,7 +248,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // LÓGICA COMPLETA RESTAURADA Y ACTUALIZADA
   async function eliminarProyecto(proyecto) {
     if (!confirm('¿Estás seguro de que deseas eliminar este proyecto?')) return;
     try {
@@ -214,6 +255,8 @@ document.addEventListener('DOMContentLoaded', function() {
         method: 'DELETE' 
       });
       if (respuesta.ok) {
+        // --- LÍNEA AÑADIDA ---
+        agregarNovedad(`eliminó el proyecto "${proyecto.nombre}"`);
         location.reload();
       } else {
         alert('Error al eliminar el proyecto');

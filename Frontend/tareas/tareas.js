@@ -45,6 +45,17 @@ document.addEventListener('DOMContentLoaded', function() {
   let proyectos = [];
   let tareas = [];
   const selectProyecto = document.querySelector('.kanban-proyecto-select');
+  
+  function agregarNovedad(mensaje) {
+    const novedades = JSON.parse(localStorage.getItem('novedades')) || [];
+    const nuevaNovedad = {
+      usuario: usuario.nombre,
+      mensaje: mensaje,
+      fecha: new Date().toLocaleString('es-AR')
+    };
+    novedades.push(nuevaNovedad);
+    localStorage.setItem('novedades', JSON.stringify(novedades));
+  }
 
   async function editarTarea(tarea) {
     abrirModalEditarTarea(tarea);
@@ -57,6 +68,8 @@ document.addEventListener('DOMContentLoaded', function() {
         method: 'DELETE'
       });
       if (!res.ok) throw new Error('Error al eliminar la tarea');
+      
+      agregarNovedad(`eliminó la tarea "${tarea.titulo}"`);
       location.reload();
     } catch (error) {
       alert('No se pudo eliminar la tarea: ' + error.message);
@@ -65,16 +78,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function poblarSelectProyectos() {
     const idProyectoUrl = getIdProyectoFromUrl();
-    const valorActual = selectProyecto.value;
     const idProyectoStorage = localStorage.getItem('kanban_id_proyecto');
     selectProyecto.innerHTML = '';
-    selectProyecto.style.display = '';
 
     if (!proyectos || proyectos.length === 0) {
       const opt = document.createElement('option');
       opt.textContent = 'No hay proyectos disponibles';
-      opt.disabled = false;
-      opt.selected = true;
       selectProyecto.appendChild(opt);
       return;
     }
@@ -90,8 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
       selectProyecto.value = idProyectoUrl;
     } else if (idProyectoStorage) {
       selectProyecto.value = idProyectoStorage;
-    } else if (valorActual) {
-      selectProyecto.value = valorActual;
     }
   }
 
@@ -108,8 +115,12 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="kanban-tarea-prioridad">Prioridad: ${tarea.prioridad || ''}</div>
       <div class="kanban-tarea-fecha">Vence: ${fechaFinal || ''}</div>
       <div class="kanban-tarea-acciones">
-        <button class="btn-editar-tarea" title="Editar tarea">...</button>
-        <button class="btn-eliminar-tarea" title="Eliminar tarea">...</button>
+        <button class="btn-circular btn-editar-tarea" title="Editar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path></svg>
+        </button>
+        <button class="btn-circular btn-eliminar-tarea" title="Eliminar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
     `;
 
@@ -205,10 +216,10 @@ document.addEventListener('DOMContentLoaded', function() {
   configurarDragDrop();
   cargarDatos();
   
-  // Lógica del modal de edición
   const modalEditarTarea = document.getElementById('modal-editar-tarea');
   const formEditarTarea = document.getElementById('form-editar-tarea');
   const btnCerrarModalEditarTarea = document.getElementById('modal-editar-tarea-cerrar-btn');
+  const mensajeModalEditarTarea = document.getElementById('mensaje-modal-editar-tarea');
   let tareaEditando = null;
 
   function abrirModalEditarTarea(tarea) {
@@ -245,10 +256,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         if (!res.ok) throw new Error('No se pudo editar la tarea');
         
-        localStorage.setItem('kanban_id_proyecto', selectProyecto.value);
-        location.reload();
+        agregarNovedad(`editó la tarea "${datos.titulo}"`);
+        
+        mensajeModalEditarTarea.textContent = 'Tarea editada correctamente.';
+        setTimeout(() => {
+          localStorage.setItem('kanban_id_proyecto', selectProyecto.value);
+          location.reload();
+        }, 800);
       } catch (err) {
-        alert('Error al editar la tarea.');
+        mensajeModalEditarTarea.textContent = 'Error al editar la tarea.';
       }
     });
   }
