@@ -4,7 +4,8 @@
   "description": "Backend del Tpfinal",
   "main": "src/api.js",
   "scripts": {
-    "dev": "nodemon src/api.js"
+    "dev": "nodemon src/api.js",
+    "start": "node src/api.js"
   },
   "author": "AugustoFran",
   "license": "ISC",
