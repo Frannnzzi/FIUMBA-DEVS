@@ -1,3 +1,5 @@
+const API_URL='https://fiumba-devs-backend.onrender.com';
+
 document.addEventListener('DOMContentLoaded', function() {
   // Mapea el estado del Kanban al estado del backend
   function mapearEstadoBackend(estadoKanban) {

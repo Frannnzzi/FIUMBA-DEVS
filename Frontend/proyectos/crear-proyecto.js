@@ -1,3 +1,5 @@
+const API_URL='https://fiumba-devs-backend.onrender.com';
+
 document.addEventListener('DOMContentLoaded', function() {
 
   const usuario = JSON.parse(localStorage.getItem('usuario'));
