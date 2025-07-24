@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+  
+  const API_URL = "https://fiumba-devs-backend.onrender.com/api";
+
   const mensajeElement = document.getElementById('mensaje-registro');
   let selectedAvatarId = null;
 
@@ -32,7 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function registrarUsuario(datos) {
-    const respuesta = await fetch('http://localhost:3000/api/usuarios', {
+    // FETCH ACTUALIZADO para usar la API_URL
+    const respuesta = await fetch(`${API_URL}/usuarios`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(datos)

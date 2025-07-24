@@ -5,7 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
     window.location.href = '../login/login.html';
     return;
   }
-  
+
+  const API_URL = "https://fiumba-devs-backend.onrender.com/api";
+
   const mapaAvatares = {
     1: '../images/logo1.jpeg',
     2: '../images/logo2.jpeg',
@@ -22,28 +24,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById('form-crear-tarea');
 
   async function cargarProyectos() {
+    if (!selectProyecto) return;
+
     try {
-      const respuesta = await fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`);
+      const respuesta = await fetch(`${API_URL}/proyectos/usuarios/${usuario.id_usuario}`);
       const proyectos = await respuesta.json();
       
-      // Unir proyectos donde es dueño y colaborador
-      let proyectosUsuario = proyectos.filter(p => p.id_usuario === usuario.id_usuario);
-      try {
-        const colaborativosRes = await fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`);
-        if (colaborativosRes.ok) {
-          const colaborativos = await colaborativosRes.json();
-          const ids = new Set();
-          proyectosUsuario = [...proyectosUsuario, ...colaborativos].filter(p => {
-            if (!ids.has(p.id_proyecto)) {
-              ids.add(p.id_proyecto);
-              return true;
-            }
-            return false;
-          });
-        }
-      } catch (e) {}
       selectProyecto.innerHTML = '<option value="">Seleccione un proyecto</option>';
-      proyectosUsuario.forEach(proyecto => {
+      proyectos.forEach(proyecto => {
         const option = document.createElement('option');
         option.value = proyecto.id_proyecto;
         option.textContent = proyecto.nombre;
@@ -67,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function crearTarea(datos, idUsuario) {
-    const respuesta = await fetch('http://localhost:3000/api/tareas', {
+    const respuesta = await fetch(`${API_URL}/tareas`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -89,8 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
           alert('Por favor, seleccione un proyecto.');
           return;
       }
-      const tareaCreada = await crearTarea(datos, usuario.id_usuario);
-      window.location.href = `tareas.html?id_proyecto=${datos.id_proyecto}`;
+      await crearTarea(datos, usuario.id_usuario);
+      window.location.href = '../tareas/tareas.html';
     } catch (error) {
       console.error('Error al crear tarea:', error);
       alert(error.message);

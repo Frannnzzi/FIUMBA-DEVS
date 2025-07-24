@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
-
+  
   const usuario = JSON.parse(localStorage.getItem('usuario'));
   if (!usuario) {
     window.location.href = '../login/login.html';
     return;
   }
-  
+
+  const API_URL = "https://fiumba-devs-backend.onrender.com/api";
+
   const mapaAvatares = {
     1: '../images/logo1.jpeg',
     2: '../images/logo2.jpeg',
@@ -18,39 +20,19 @@ document.addEventListener('DOMContentLoaded', function() {
     logoUsuario.src = rutaAvatar;
   }
 
-  const form = document.getElementById('form-crear-proyecto');
-
-  // Colaboradores
-  const inputColaborador = document.getElementById('input-colaborador');
-  const btnAgregarColaborador = document.getElementById('btn-agregar-colaborador');
-  const listaColaboradores = document.getElementById('lista-colaboradores');
+  const form = document.querySelector('.form-crear-proyecto');
+  let todosLosUsuarios = [];
   let colaboradores = [];
+  const inputColaborador = document.querySelector('.input-colaborador');
+  const btnAgregarColaborador = document.querySelector('.btn-agregar-colaborador');
+  const listaColaboradores = document.querySelector('.lista-colaboradores');
 
-  btnAgregarColaborador.addEventListener('click', function() {
-    const email = inputColaborador.value.trim();
-    if (email && !colaboradores.includes(email)) {
-      colaboradores.push(email);
-      renderColaboradores();
-      inputColaborador.value = '';
+  function validarFechas(fechaInicio, fechaFinal) {
+    if (fechaFinal < fechaInicio) {
+      alert('La fecha final no puede ser menor a la fecha de inicio.');
+      return false;
     }
-  });
-
-  function renderColaboradores() {
-    listaColaboradores.innerHTML = '';
-    colaboradores.forEach((email, idx) => {
-      const li = document.createElement('li');
-      li.className = 'colaborador-item';
-      li.textContent = email;
-      const btnQuitar = document.createElement('button');
-      btnQuitar.textContent = '✕';
-      btnQuitar.className = 'btn-eliminar-colaborador';
-      btnQuitar.onclick = function() {
-        colaboradores.splice(idx, 1);
-        renderColaboradores();
-      };
-      li.appendChild(btnQuitar);
-      listaColaboradores.appendChild(li);
-    });
+    return true;
   }
 
   function obtenerDatosFormulario(form) {
@@ -65,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function crearProyecto(datos, idUsuario) {
-    const respuesta = await fetch('http://localhost:3000/api/proyectos', {
+    const respuesta = await fetch(`${API_URL}/proyectos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -74,41 +56,111 @@ document.addEventListener('DOMContentLoaded', function() {
       })
     });
     if (!respuesta.ok) {
-      throw new Error('Error al crear el proyecto');
+      const error = await respuesta.json();
+      throw new Error(error.error || 'Error al crear el proyecto');
     }
     return await respuesta.json();
   }
 
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
+  async function cargarUsuarios() {
     try {
-      const datos = obtenerDatosFormulario(form);
-      if (datos.fecha_final < datos.fecha_inicio) {
-        alert('La fecha final no puede ser menor a la fecha de inicio.');
+      const res = await fetch(`${API_URL}/usuarios`);
+      if (res.ok) {
+        todosLosUsuarios = await res.json();
+      }
+    } catch (e) { console.error('Error cargando usuarios', e); }
+  }
+  cargarUsuarios();
+
+  function renderizarColaboradores() {
+    listaColaboradores.innerHTML = '';
+    colaboradores.forEach((colab, idx) => {
+      const li = document.createElement('li');
+      li.textContent = `${colab.nombre} (${colab.mail})`;
+      const btnEliminar = document.createElement('button');
+      btnEliminar.textContent = '✖';
+      btnEliminar.title = 'Eliminar';
+      btnEliminar.className = 'btn-eliminar-colaborador';
+      btnEliminar.onclick = () => {
+        colaboradores.splice(idx, 1);
+        renderizarColaboradores();
+      };
+      li.appendChild(btnEliminar);
+      listaColaboradores.appendChild(li);
+    });
+  }
+
+  if (btnAgregarColaborador) {
+    btnAgregarColaborador.addEventListener('click', function() {
+      const mail = inputColaborador.value.trim().toLowerCase();
+      if (!mail) return;
+      if (colaboradores.some(c => c.mail === mail)) {
+        alert('Ya agregaste este colaborador.');
         return;
       }
-      
-      // Enviar colaboradores uno por uno, verificando existencia
-      const proyectoCreado = await crearProyecto(datos, usuario.id_usuario);
-      let erroresColaboradores = [];
-      for (const email of colaboradores) {
-        const resp = await fetch('http://localhost:3000/api/colaboradores', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, id_proyecto: proyectoCreado.id_proyecto })
-        });
-        if (!resp.ok) {
-          const err = await resp.json();
-          erroresColaboradores.push(email + ': ' + (err.error || 'Error desconocido'));
+      const usuarioEncontrado = todosLosUsuarios.find(u => u.mail && u.mail.toLowerCase() === mail);
+      if (!usuarioEncontrado) {
+        alert('No existe un usuario con ese correo.');
+        return;
+      }
+      if (usuarioEncontrado.id_usuario === usuario.id_usuario) {
+        alert('No puedes agregarte a ti mismo como colaborador.');
+        return;
+      }
+      colaboradores.push(usuarioEncontrado);
+      renderizarColaboradores();
+      inputColaborador.value = '';
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      try {
+        const datos = obtenerDatosFormulario(form);
+        if (!validarFechas(datos.fecha_inicio, datos.fecha_final)) {
+          return;
         }
+
+        const resProyecto = await crearProyecto(datos, usuario.id_usuario);
+        const id_proyecto = resProyecto.proyecto?.id_proyecto || resProyecto.id_proyecto;
+
+        for (const colab of colaboradores) {
+          await fetch(`${API_URL}/colaboradores`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id_usuario: colab.id_usuario, id_proyecto })
+          });
+        }
+        
+        if (typeof agregarNovedad === 'function') {
+            const mensajeNovedad = `${usuario?.nombre || 'Usuario'} creó el proyecto "${datos.nombre}"`;
+            agregarNovedad(mensajeNovedad);
+        }
+
+        setTimeout(() => {
+          window.location.href = '../proyectos/proyectos.html';
+        }, 150);
+
+      } catch (error) {
+        console.error('Error al crear proyecto:', error);
+        alert(error.message || 'Error de conexión con el servidor');
       }
-      if (erroresColaboradores.length > 0) {
-        alert('Algunos colaboradores no se agregaron:\n' + erroresColaboradores.join('\n'));
-      }
-      window.location.href = '../proyectos/proyectos.html';
-    } catch (error) {
-      console.error('Error al crear proyecto:', error);
-      alert(error.message);
-    }
-  });
+    });
+  }
 });
+
+if (typeof agregarNovedad !== 'function') {
+    window.agregarNovedad = function(mensaje) {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        const nombreUsuario = usuario?.nombre || 'Usuario';
+        let novedades = JSON.parse(localStorage.getItem('novedades')) || [];
+        const fecha = new Date().toLocaleString('es-AR');
+        novedades.push({ 
+            usuario: nombreUsuario, 
+            mensaje, 
+            fecha 
+        });
+        localStorage.setItem('novedades', JSON.stringify(novedades));
+    };
+}

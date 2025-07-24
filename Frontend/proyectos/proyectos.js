@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
   
+  const API_URL = "https://fiumba-devs-backend.onrender.com/api";
+
   const mapaAvatares = {
     1: '../images/logo1.jpeg',
     2: '../images/logo2.jpeg',
@@ -27,17 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
   let proyectoSeleccionadoId = null;
   let todosLosUsuarios = [];
   let proyectos = [];
-
-  // Modal editar proyecto
-  const modalEditarProyecto = document.getElementById('modal-editar-proyecto');
-  const formEditarProyecto = document.getElementById('form-editar-proyecto');
-  const btnCerrarModalEditarProyecto = document.getElementById('modal-editar-cerrar-btn');
-  const mensajeModalEditar = document.getElementById('mensaje-modal-editar');
-  let proyectoEditando = null;
   let tareas = [];
   const lista = document.querySelector('.lista-proyectos');
-  const inputBuscarProyecto = document.querySelector('.input-buscar-proyecto');
-  let proyectosFiltrados = [];
 
   function formatearFecha(fecha) {
     if (!fecha) return '';
@@ -61,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     tarjeta.className = 'tarjeta-proyecto';
     tarjeta.innerHTML = `
       <button class="btn-agregar-colaborador" title="Agregar colaborador">
-        <img src="../images/agregarPersona.png" alt="Agregar colaborador" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;" />
+        <svg fill="#000000" height="20px" width="20px" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
       </button>
       <div class="info-proyecto">
         <div class="nombre-proyecto">${proyecto.nombre}</div>
@@ -96,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
     inputEmailColaborador.value = '';
     
     try {
-      const res = await fetch(`http://localhost:3000/api/usuarios/proyectos/${id_proyecto}`);
+      const res = await fetch(`${API_URL}/usuarios/proyectos/${id_proyecto}`);
       if (!res.ok) throw new Error('No se pudieron cargar los colaboradores.');
       const colaboradores = await res.json();
       listaColaboradoresActuales.innerHTML = '';
@@ -104,25 +97,6 @@ document.addEventListener('DOMContentLoaded', function() {
         colaboradores.forEach(c => {
           const li = document.createElement('li');
           li.textContent = `${c.nombre} ${c.apellido} (${c.mail})`;
-          // Botón eliminar colaborador
-          const btnEliminarColaborador = document.createElement('button');
-          btnEliminarColaborador.textContent = 'Eliminar';
-          btnEliminarColaborador.className = 'btn-eliminar-colaborador';
-          btnEliminarColaborador.onclick = async () => {
-            if (confirm(`¿Eliminar a ${c.nombre} ${c.apellido} de este proyecto?`)) {
-              try {
-                const res = await fetch(`http://localhost:3000/api/colaboradores/${c.id_usuario}/${id_proyecto}`, {
-                  method: 'DELETE'
-                });
-                if (!res.ok) throw new Error('No se pudo eliminar el colaborador');
-                li.remove();
-                mensajeModal.textContent = 'Colaborador eliminado correctamente.';
-              } catch (err) {
-                mensajeModal.textContent = 'Error al eliminar colaborador.';
-              }
-            }
-          };
-          li.appendChild(btnEliminarColaborador);
           listaColaboradoresActuales.appendChild(li);
         });
       } else {
@@ -132,12 +106,10 @@ document.addEventListener('DOMContentLoaded', function() {
       listaColaboradoresActuales.innerHTML = `<li>${error.message}</li>`;
     }
     modal.classList.remove('modal-colaborador-oculto');
-    modal.style.display = 'flex';
   }
 
   function cerrarModal() {
     modal.classList.add('modal-colaborador-oculto');
-    modal.style.display = 'none';
   }
 
   async function manejarSubmitColaborador(e) {
@@ -150,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
     try {
-      const res = await fetch('http://localhost:3000/api/colaboradores', {
+      const res = await fetch(`${API_URL}/colaboradores`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -187,116 +159,118 @@ document.addEventListener('DOMContentLoaded', function() {
       const tarjeta = crearTarjetaProyecto(proyecto);
       lista.appendChild(tarjeta);
     });
-
-  // Filtrado en tiempo real
-  if (inputBuscarProyecto) {
-    inputBuscarProyecto.addEventListener('input', function() {
-      const texto = inputBuscarProyecto.value.trim().toLowerCase();
-      if (texto === '') {
-        renderizarProyectos(proyectos);
-      } else {
-        proyectosFiltrados = proyectos.filter(p =>
-          p.nombre.toLowerCase().includes(texto) ||
-          (p.descripcion && p.descripcion.toLowerCase().includes(texto))
-        );
-        renderizarProyectos(proyectosFiltrados);
-      }
-    });
-  }
   }
 
-  function abrirModalEditarProyecto(proyecto) {
-    proyectoEditando = proyecto;
-    document.getElementById('editar-nombre').value = proyecto.nombre || '';
-    document.getElementById('editar-descripcion').value = proyecto.descripcion || '';
-    document.getElementById('editar-fecha-inicio').value = proyecto.fecha_inicio ? proyecto.fecha_inicio.split('T')[0] : '';
-    document.getElementById('editar-fecha-final').value = proyecto.fecha_final ? proyecto.fecha_final.split('T')[0] : '';
-    document.getElementById('editar-estado').value = proyecto.estado || 'pendiente';
-    mensajeModalEditar.textContent = '';
-    modalEditarProyecto.classList.remove('modal-editar-proyecto-oculto');
-    modalEditarProyecto.style.display = 'flex';
-  }
+  // LÓGICA COMPLETA RESTAURADA Y ACTUALIZADA
+  async function editarProyecto(proyecto) {
+    const nuevoNombre = prompt('Editar nombre del proyecto:', proyecto.nombre);
+    if (nuevoNombre === null) return;
 
-  btnCerrarModalEditarProyecto.addEventListener('click', () => {
-    modalEditarProyecto.classList.add('modal-editar-proyecto-oculto');
-    modalEditarProyecto.style.display = 'none';
-    proyectoEditando = null;
-  });
+    const nuevaDescripcion = prompt('Editar descripción del proyecto:', proyecto.descripcion);
+    if (nuevaDescripcion === null) return;
 
-  formEditarProyecto.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    if (!proyectoEditando) return;
-    const datos = {
-      nombre: document.getElementById('editar-nombre').value,
-      descripcion: document.getElementById('editar-descripcion').value,
-      fecha_inicio: document.getElementById('editar-fecha-inicio').value,
-      fecha_final: document.getElementById('editar-fecha-final').value,
-      estado: document.getElementById('editar-estado').value
-    };
+    const nuevaFechaInicio = prompt('Editar fecha de inicio (YYYY-MM-DD):', proyecto.fecha_inicio.split('T')[0]);
+    if (nuevaFechaInicio === null) return;
+
+    const nuevaFechaFinal = prompt('Editar fecha final (YYYY-MM-DD):', proyecto.fecha_final.split('T')[0]);
+    if (nuevaFechaFinal === null) return;
+
+    const nuevoEstado = prompt('Editar estado:', proyecto.estado);
+    if (nuevoEstado === null) return;
+
+    if (nuevaFechaFinal < nuevaFechaInicio) {
+      alert('La fecha final no puede ser menor a la fecha de inicio.');
+      return;
+    }
+
     try {
-      const res = await fetch(`http://localhost:3000/api/proyectos/${proyectoEditando.id_proyecto}`, {
+      const respuesta = await fetch(`${API_URL}/proyectos/${proyecto.id_proyecto}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-
+        body: JSON.stringify({
+          nombre: nuevoNombre,
+          descripcion: nuevaDescripcion,
+          fecha_inicio: nuevaFechaInicio,
+          fecha_final: nuevaFechaFinal,
+          estado: nuevoEstado
+        })
       });
-      if (!res.ok) throw new Error('No se pudo editar el proyecto');
-      agregarNovedad(`Modificaste el proyecto ${proyectoEditando.nombre}`);
-      mensajeModalEditar.textContent = 'Proyecto editado correctamente.';
-      setTimeout(() => {
-        modalEditarProyecto.classList.add('modal-editar-proyecto-oculto');
-        modalEditarProyecto.style.display = 'none';
-        proyectoEditando = null;
-        location.reload();
-      }, 800);
-    } catch (err) {
-      mensajeModalEditar.textContent = 'Error al editar el proyecto.';
-    }
-  });
 
-  // Reemplazar la función de editar por el modal
-  function editarProyecto(proyecto) {
-    abrirModalEditarProyecto(proyecto);
+      if (respuesta.ok) {
+        location.reload();
+      } else {
+        alert('Error al actualizar el proyecto');
+      }
+    } catch (error) {
+      alert('Error de conexión al actualizar el proyecto');
+    }
   }
 
+  // LÓGICA COMPLETA RESTAURADA Y ACTUALIZADA
   async function eliminarProyecto(proyecto) {
-    if (!confirm('¿Seguro que quieres eliminar este proyecto?')) return;
+    if (!confirm('¿Estás seguro de que deseas eliminar este proyecto?')) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/proyectos/${proyecto.id_proyecto}`, {
-        method: 'DELETE'
+      const respuesta = await fetch(`${API_URL}/proyectos/${proyecto.id_proyecto}`, { 
+        method: 'DELETE' 
       });
-      if (!res.ok) throw new Error('Error al eliminar el proyecto');
-      await cargarDatos();
+      if (respuesta.ok) {
+        location.reload();
+      } else {
+        alert('Error al eliminar el proyecto');
+      }
     } catch (error) {
-      alert('No se pudo eliminar el proyecto: ' + error.message);
+      alert('Error de conexión al eliminar el proyecto');
+    }
+  }
+
+  // LÓGICA COMPLETA RESTAURADA Y ACTUALIZADA
+  function buscarProyectos() {
+    const inputBuscar = document.querySelector('.input-buscar-proyecto');
+    const texto = inputBuscar.value.trim().toLowerCase();
+    const proyectosFiltrados = proyectos.filter(proyecto =>
+      proyecto.nombre.toLowerCase().includes(texto) ||
+      proyecto.descripcion.toLowerCase().includes(texto)
+    );
+    renderizarProyectos(proyectosFiltrados);
+  }
+
+  function configurarBusqueda() {
+    const inputBuscar = document.querySelector('.input-buscar-proyecto');
+    if (inputBuscar) {
+      inputBuscar.addEventListener('input', buscarProyectos);
     }
   }
 
   async function cargarDatos() {
     try {
-      const [respuestaProyectos, respuestaUsuarios] = await Promise.all([
-        fetch(`http://localhost:3000/api/proyectos/usuarios/${usuario.id_usuario}`),
-        fetch('http://localhost:3000/api/usuarios'),
+      const [respuestaProyectos, respuestaTareas, respuestaUsuarios] = await Promise.all([
+        fetch(`${API_URL}/proyectos/usuarios/${usuario.id_usuario}`),
+        fetch(`${API_URL}/tareas`),
+        fetch(`${API_URL}/usuarios`),
       ]);
-      if (!respuestaProyectos.ok) throw new Error(`Error al cargar proyectos: ${respuestaProyectos.status}`);
-      if (!respuestaUsuarios.ok) throw new Error(`Error al cargar usuarios: ${respuestaUsuarios.status}`);
+      if (!respuestaProyectos.ok) throw new Error(`Error al cargar proyectos`);
+      if (!respuestaTareas.ok) throw new Error(`Error al cargar tareas`);
+      if (!respuestaUsuarios.ok) throw new Error(`Error al cargar usuarios`);
+
       const proyectosData = await respuestaProyectos.json();
+      const tareasData = await respuestaTareas.json();
       todosLosUsuarios = await respuestaUsuarios.json();
-      proyectos = proyectosData.filter(p => p.id_usuario === usuario.id_usuario);
+      proyectos = proyectosData;
+      tareas = tareasData;
       renderizarProyectos(proyectos);
     } catch (error) {
       console.error('Error al cargar los datos:', error);
       proyectos = [];
+      tareas = [];
       renderizarProyectos(proyectos);
     }
   }
-
+  
   if(modal) {
     btnCerrarModal.addEventListener('click', cerrarModal);
     formColaborador.addEventListener('submit', manejarSubmitColaborador);
   }
 
   cargarDatos();
-  //configurarBusqueda();
-
+  configurarBusqueda();
 });
