@@ -1,5 +1,3 @@
-const API_URL='https://fiumba-devs-backend.onrender.com';
-
 document.addEventListener('DOMContentLoaded', function() {
   const mensajeElement = document.getElementById('mensaje-registro');
   let selectedAvatarId = null;
