@@ -9,7 +9,7 @@
 
 **FIUMBA-DEVS** es un gestor de tareas colaborativas diseñado para que estudiantes, equipos de trabajo y grupos de proyecto puedan organizarse de forma efectiva.  
 Permite coordinar, asignar y hacer seguimiento de tareas en equipo, viendo el progreso general y manteniendo un control claro sobre qué debe hacer cada integrante.
-
+(https://fiumba-devs-frontend.onrender.com)
 ---
 
 ## 👥 Integrantes
